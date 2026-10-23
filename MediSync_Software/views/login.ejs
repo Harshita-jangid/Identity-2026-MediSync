@@ -1,0 +1,20 @@
+<%- include('partials/header',{title}) %>
+    <section class="login-wrap">
+        <div class="login-card">
+            <div class="login-mark">M</div>
+            <p class="eyebrow">ADMINISTRATOR ACCESS</p>
+            <h1>Welcome back</h1>
+            <p class="muted-text">Sign in to manage your clinic.</p>
+            <% if(errorMessage){ %>
+                <div class="alert">
+                    <%= errorMessage %>
+                </div>
+                <% } %>
+                    <form method="post" action="/admin/login" class="login-form"><input type="hidden" name="next"
+                            value="<%= next %>"><label>Username<input name="username" required
+                                autocomplete="username"></label><label>Password<input type="password" name="password"
+                                required autocomplete="current-password"></label><button class="button wide">Sign
+                            in</button></form>
+                    <p class="hint">Set login credentials in your local .env file.</p>
+        </div>
+    </section><%- include('partials/footer') %>

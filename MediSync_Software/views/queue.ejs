@@ -1,0 +1,140 @@
+<%- include('partials/header', { title }) %>
+
+<div class="page-heading">
+    <div>
+        <p class="eyebrow">OUTPATIENT DEPARTMENT</p>
+        <h1>OPD Live Queue</h1>
+        <p>Reception aur website ke patients ki queue manage karein.</p>
+    </div>
+</div>
+
+<form class="search" method="GET" action="/queue">
+    <label class="date-filter">
+        Queue date
+        <input type="date" name="date" value="<%= date %>" required>
+    </label>
+    <button class="button" type="submit">View Queue</button>
+    <a class="button secondary" href="/queue?date=<%= t %>">Today</a>
+</form>
+
+<section class="queue-banner">
+    <div>
+        <span class="eyebrow">SELECTED DATE</span>
+        <h2><%= date %></h2>
+    </div>
+    <div>
+        <span class="queue-number"><%= appointments.length %></span>
+        <span class="muted">patients in queue</span>
+    </div>
+</section>
+
+<section class="queue-list">
+    <% if (!appointments.length) { %>
+        <div class="panel empty">
+            No appointments for this date.
+        </div>
+    <% } else { %>
+
+        <% appointments.forEach(a => {
+            const isOnline = a.source === "Online";
+            const patientName =
+                a.patientName || a.patient?.name || "Unknown patient";
+            const doctorName =
+                a.doctorName ||
+                (typeof a.doctor === "string" ? a.doctor : a.doctor?.name) ||
+                "Unknown doctor";
+            const appointmentTime =
+                a.displayTime || a.appointmentTime || a.time || "--:--";
+            const status = a.status || "Booked";
+        %>
+
+            <article class="queue-card">
+                <div class="token">
+                    <span>OPD TOKEN</span>
+                    <strong>
+                        <%= a.tokenLabel ||
+                            (a.tokenNumber
+                                ? "T-" + String(a.tokenNumber).padStart(3, "0")
+                                : "—") %>
+                    </strong>
+                    <small><%= appointmentTime %></small>
+                </div>
+
+                <div class="queue-person">
+                    <h3><%= patientName %></h3>
+                    <p>
+                        <%= doctorName %>
+                        <% if (a.specialization || a.department) { %>
+                            · <%= a.specialization || a.department %>
+                        <% } %>
+                    </p>
+                    <p class="muted">
+                        <%= a.reason || "General consultation" %>
+                    </p>
+                    <span class="badge">
+                        <%= isOnline ? "Online Booking" : "Reception" %>
+                    </span>
+                </div>
+
+                <div class="queue-status">
+                    <span class="status <%= status.toLowerCase().replace(/ /g, '-') %>">
+                        <%= status %>
+                    </span>
+
+                    <% if (["Waiting", "Booked"].includes(status)) { %>
+                        <form method="POST"
+                              action="<%= isOnline
+                                ? '/queue/online/' + a._id + '/action'
+                                : '/queue/' + a._id + '/action' %>">
+                            <input type="hidden" name="action" value="call">
+                            <button class="button small" type="submit">
+                                Call Patient
+                            </button>
+                        </form>
+
+                        <form method="POST"
+                              action="<%= isOnline
+                                ? '/queue/online/' + a._id + '/action'
+                                : '/queue/' + a._id + '/action' %>">
+                            <input type="hidden" name="action" value="cancel">
+                            <button class="button secondary small" type="submit">
+                                Cancel
+                            </button>
+                        </form>
+
+                    <% } else if (status === "In Consultation") { %>
+                        <form method="POST"
+                              action="<%= isOnline
+                                ? '/queue/online/' + a._id + '/action'
+                                : '/queue/' + a._id + '/action' %>">
+                            <input type="hidden" name="action" value="complete">
+                            <button class="button small" type="submit">
+                                Mark Completed
+                            </button>
+                        </form>
+
+                        <form method="POST"
+                              action="<%= isOnline
+                                ? '/queue/online/' + a._id + '/action'
+                                : '/queue/' + a._id + '/action' %>">
+                            <input type="hidden" name="action" value="waiting">
+                            <button class="button secondary small" type="submit">
+                                Return to Waiting
+                            </button>
+                        </form>
+
+                    <% } else { %>
+                        <span class="muted">No action needed</span>
+                    <% } %>
+                </div>
+            </article>
+
+        <% }) %>
+    <% } %>
+</section>
+
+<p class="muted queue-note">
+    Queue ko refresh karne par latest status dikhega.
+</p>
+
+<%- include('partials/footer') %>

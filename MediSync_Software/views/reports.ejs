@@ -1,0 +1,31 @@
+<%- include('partials/header',{title}) %>
+    <div class="page-heading">
+        <div>
+            <p class="eyebrow">CLINIC SUMMARY</p>
+            <h1>Reports</h1>
+            <p>Summary counts from saved records.</p>
+        </div><button class="button secondary" onclick="window.print()">Print report</button>
+    </div>
+    <section class="stats">
+        <article class="stat"><span>Patients</span><strong>
+                <%= patients %>
+            </strong><small>Registered</small></article>
+        <article class="stat"><span>Active doctors</span><strong>
+                <%= doctors %>
+            </strong><small>Active profiles</small></article>
+        <article class="stat"><span>Total appointments</span><strong>
+                <%= total %>
+            </strong><small>All statuses</small></article>
+    </section>
+    <section class="panel">
+        <h2>Appointment status summary</h2>
+        <div class="report-row"><span>Completed</span><strong>
+                <%= completed %>
+            </strong></div>
+        <div class="report-row"><span>Waiting / booked / in consultation</span><strong>
+                <%= waiting %>
+            </strong></div>
+        <div class="report-row"><span>Cancelled</span><strong>
+                <%= cancelled %>
+            </strong></div>
+    </section><%- include('partials/footer') %>

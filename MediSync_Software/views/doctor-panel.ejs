@@ -1,0 +1,87 @@
+<%- include('partials/header',{title}) %>
+
+<div class="page-heading">
+    <div>
+        <p class="eyebrow">DOCTOR WORKSPACE</p>
+        <h1>Welcome, <%= doctor.name %></h1>
+        <p><%= doctor.specialization %> · Room <%= doctor.room || 'Not assigned' %></p>
+    </div>
+    <form method="post" action="/doctor/logout">
+        <button class="button secondary">Logout</button>
+    </form>
+</div>
+
+<section class="panel">
+    <h2>My appointments</h2>
+
+    <form class="search" method="get" action="/doctor/panel">
+        <label>
+            Date
+            <input type="date" name="date" value="<%= date %>" required>
+        </label>
+        <input name="q" value="<%= q %>" placeholder="Search patient name, phone or token">
+        <button class="button">Search</button>
+        <a class="button secondary" href="/doctor/panel">Today</a>
+    </form>
+
+    <% if (!appointments.length) { %>
+        <div class="empty">No appointments found for this date/search.</div>
+    <% } else { %>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Token</th>
+                        <th>Patient</th>
+                        <th>Age</th>
+                        <th>Time</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Update Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% appointments.forEach(a => { %>
+                        <tr>
+                            <td><b><%= a.tokenLabel || '—' %></b></td>
+
+                            <td>
+                                <strong><%= a.patientName || a.patient?.name || 'Unknown patient' %></strong>
+                                <div class="muted"><%= a.patientPhone || a.patient?.phone || '' %></div>
+                                <span class="badge"><%= a.source || 'Reception' %></span>
+                            </td>
+
+                            <td><%= a.patientAge ?? a.patient?.age ?? '—' %></td>
+
+                            <td><%= a.displayTime || a.appointmentTime || a.time || '—' %></td>
+
+                            <td><%= a.reason || '—' %></td>
+
+                            <td>
+                                <span class="status <%= String(a.status || 'Booked').toLowerCase().replace(/ /g, '-') %>">
+                                    <%= a.status || 'Booked' %>
+                                </span>
+                            </td>
+
+                            <td>
+                                <form class="inline-form" method="post"
+                                    action="<%= a.source === 'Online' ? '/doctor/online-appointments/' + a._id + '/status' : '/doctor/appointments/' + a._id + '/status' %>">
+
+                                    <select name="status" required>
+                                        <% ['Booked', 'Waiting', 'In Consultation', 'Completed', 'Cancelled'].forEach(s => { %>
+                                            <option value="<%= s %>" <%= a.status === s ? 'selected' : '' %>><%= s %></option>
+                                        <% }) %>
+                                    </select>
+
+                                    <button type="submit" class="button small">Save</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    <% } %>
+</section>
+
+<%- include('partials/footer') %>

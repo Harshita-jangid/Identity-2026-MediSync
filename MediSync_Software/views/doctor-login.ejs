@@ -1,0 +1,23 @@
+<%- include('partials/header',{title}) %>
+    <div class="page-heading">
+        <div>
+            <p class="eyebrow">CLINICAL TEAM</p>
+            <h1>Doctor Portal</h1>
+            <p>Sign in to view your appointments and update visit status.</p>
+        </div>
+    </div>
+    <section class="panel narrow">
+        <h2>Doctor sign in</h2>
+        <% if(errorMessage){ %>
+            <div class="notice error-notice">
+                <%= errorMessage %>
+            </div>
+            <% } %>
+                <form class="form-grid" method="post" action="/doctor/login"><label>Registered phone number *<input
+                            name="phone" type="tel" autocomplete="username" required></label><label>Portal password
+                        *<input name="password" type="password" autocomplete="current-password" required></label><button
+                        class="button" type="submit">Sign in to Doctor Panel</button></form>
+                <p class="muted">Demo setup: admin must register the doctor with a phone number. Set
+                    DOCTOR_PORTAL_PASSWORD in .env before use.</p>
+    </section>
+    <%- include('partials/footer') %>

@@ -1,0 +1,69 @@
+<%- include('partials/header',{title}) %>
+    <div class="page-heading">
+        <div>
+            <p class="eyebrow">CLINICAL TEAM</p>
+            <h1>Doctors</h1>
+            <p>Manage doctor profiles and availability.</p>
+        </div>
+    </div>
+    <section class="panel">
+        <h2>Add doctor</h2>
+        <form class="form-grid compact" method="post" action="/doctors"><label>Doctor name *<input name="name"
+                    required></label><label>Specialization *<input name="specialization"
+                    required></label><label>Phone<input name="phone"></label><label>Room / cabin<input
+                    name="room"></label>
+            <div class="form-actions full"><button class="button">Add doctor</button></div>
+        </form>
+    </section>
+    <section class="panel">
+        <h2>Doctor directory</h2>
+        <% if(!doctors.length){ %>
+            <div class="empty">No doctors added.</div>
+            <% }else{ %>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Specialization</th>
+                                <th>Phone</th>
+                                <th>Room</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% doctors.forEach(d=>{ %><tr>
+                                    <td><b>
+                                            <%= d.name %>
+                                        </b></td>
+                                    <td>
+                                        <%= d.specialization %>
+                                    </td>
+                                    <td>
+                                        <%= d.phone||'—' %>
+                                    </td>
+                                    <td>
+                                        <%= d.room||'—' %>
+                                    </td>
+                                    <td>
+                                        <%= d.active?'Active':'Inactive' %>
+                                    </td>
+                                    <td>
+                                        <div class="actions">
+                                            <form method="post" action="/doctors/<%= d._id %>/toggle"><button
+                                                    class="button secondary small">
+                                                    <%= d.active?'Deactivate':'Activate' %>
+                                                </button></form>
+                                            <form method="post" action="/doctors/<%= d._id %>/delete"
+                                                onsubmit="return confirm('Delete doctor?')"><button
+                                                    class="link-danger">Delete</button></form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                <% } %>
+    </section><%- include('partials/footer') %>

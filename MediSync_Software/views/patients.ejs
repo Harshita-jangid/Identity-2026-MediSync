@@ -1,0 +1,59 @@
+<%- include('partials/header',{title}) %>
+    <div class="page-heading">
+        <div>
+            <p class="eyebrow">PATIENT DIRECTORY</p>
+            <h1>Patients</h1>
+            <p>Register, search and manage patient records.</p>
+        </div><a class="button" href="/patients/new">＋ Register patient</a>
+    </div>
+    <form class="search" method="get"><input name="q" value="<%= q %>"
+            placeholder="Search patient name or phone"><button class="button">Search</button><a class="button secondary"
+            href="/patients">Clear</a></form>
+    <section class="panel">
+        <% if(!patients.length){ %>
+            <div class="empty">No patients found.</div>
+            <% }else{ %>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Gender</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% patients.forEach(p=>{ %><tr>
+                                    <td><a class="text-link" href="/patients/<%= p._id %>">
+                                            <%= p.name %>
+                                        </a></td>
+                                    <td>
+                                        <%= p.age %>
+                                    </td>
+                                    <td>
+                                        <%= p.gender %>
+                                    </td>
+                                    <td>
+                                        <%= p.phone %>
+                                    </td>
+                                    <td>
+                                        <%= p.email||'—' %>
+                                    </td>
+                                    <td>
+                                        <div class="actions"><a class="text-link"
+                                                href="/patients/<%= p._id %>/edit">Edit</a>
+                                            <form method="post" action="/patients/<%= p._id %>/delete"
+                                                onsubmit="return confirm('Delete patient and linked appointments?')">
+                                                <button class="link-danger">Delete</button></form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                <% } %>
+    </section><%- include('partials/footer') %>

@@ -1,0 +1,165 @@
+<%- include('partials/header', { title }) %>
+
+<div class="page-heading">
+    <div>
+        <p class="eyebrow">SCHEDULING</p>
+        <h1>Appointments</h1>
+        <p>Reception aur website se book hui appointments.</p>
+    </div>
+    <a class="button" href="/queue">View OPD Queue →</a>
+</div>
+
+<!-- Reception Appointment Form -->
+
+<div class="panel">
+    <h2>Book Reception Appointment</h2>
+    <p class="muted">Select a registered patient and schedule an appointment.</p>
+
+    <form method="POST" action="/appointments" class="form-grid">
+        <div>
+            <label for="patient">Patient</label>
+            <select id="patient" name="patient" required>
+                <option value="">Select Patient</option>
+                <% (patients || []).forEach(p => { %>
+                    <option value="<%= p._id %>">
+                        <%= p.name %> - <%= p.phone %>
+                    </option>
+                <% }) %>
+            </select>
+        </div>
+
+        <div>
+            <label for="doctor">Doctor</label>
+            <select id="doctor" name="doctor" required>
+                <option value="">Select Doctor</option>
+                <% (doctors || []).forEach(d => { %>
+                    <option value="<%= d._id %>">
+                        <%= d.name %> - <%= d.specialization %>
+                    </option>
+                <% }) %>
+            </select>
+        </div>
+
+        <div>
+            <label for="date">Appointment Date</label>
+            <input type="date" id="date" name="date"
+                value="<%= date || t %>" min="<%= t %>" required>
+        </div>
+
+        <div>
+            <label for="time">Appointment Time</label>
+            <input type="time" id="time" name="time" required>
+        </div>
+
+        <div class="full-width">
+            <label for="reason">Reason for Visit</label>
+            <textarea id="reason" name="reason" rows="3"
+                placeholder="Enter symptoms or reason for visit"></textarea>
+        </div>
+
+        <div class="full-width">
+            <button type="submit" class="button">Book Appointment</button>
+        </div>
+    </form>
+</div>
+
+<!-- Appointment Date Filter -->
+<div class="panel">
+    <h2>All Appointments</h2>
+
+    <form method="GET" action="/appointments" class="filter-form">
+        <div>
+            <label for="date">Appointment Date</label>
+            <input type="date" id="date" name="date"
+                value="<%= date || t %>" required>
+        </div>
+        <button type="submit" class="button">Filter</button>
+        <a class="button secondary" href="/appointments">Today</a>
+    </form>
+</div>
+
+<!-- Appointments Table -->
+<div class="panel">
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Token</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Reason</th>
+                    <th>Source</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <% if (appointments && appointments.length > 0) { %>
+                    <% appointments.forEach(a => { %>
+                        <%
+                            const source = String(a.source || (a.patientName ? "Online" : "Reception")).toLowerCase();
+                            const isOnline = source === "online";
+                            const patientName = a.patientName || a.patient?.name || "Unknown Patient";
+                            const doctorName = a.doctorName || (typeof a.doctor === "string" ? a.doctor : a.doctor?.name) || "Unknown Doctor";
+                            const displayDate = a.displayDate || a.appointmentDate || a.date || "-";
+                            const displayTime = a.displayTime || a.appointmentTime || a.time || "-";
+                            const currentStatus = a.status || "Booked";
+                        %>
+
+                        <tr>
+                            <td>
+                                <strong><%= a.tokenLabel || (a.tokenNumber ? "T-" + String(a.tokenNumber).padStart(3, "0") : "-") %></strong>
+                            </td>
+                            <td>
+                                <strong><%= patientName %></strong>
+                                <br>
+                                <small><%= a.phone || a.patient?.phone || "" %></small>
+                            </td>
+                            <td><%= doctorName %></td>
+                            <td><%= displayDate %></td>
+                            <td><%= displayTime %></td>
+                            <td><%= a.reason || "-" %></td>
+                            <td>
+                                <span class="badge"><%= isOnline ? "Online" : "Reception" %></span>
+                            </td>
+                            <td>
+                                <span class="badge"><%= currentStatus %></span>
+                            </td>
+                            <td>
+                                <% if (a._id) { %>
+                                    <form method="POST"
+                                        action="<%= isOnline ? '/online-appointments/' + a._id + '/status' : '/appointments/' + a._id + '/status' %>"
+                                        class="status-form">
+
+                                        <select name="status" required>
+                                            <% ["Waiting", "Booked", "In Consultation", "Completed", "Cancelled"].forEach(s => { %>
+                                                <option value="<%= s %>" <%= currentStatus === s ? "selected" : "" %>>
+                                                    <%= s %>
+                                                </option>
+                                            <% }) %>
+                                        </select>
+
+                                        <button type="submit" class="button">Update</button>
+                                    </form>
+                                <% } else { %>
+                                    <span>Unavailable</span>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="9" class="empty-state">
+                            No appointments found for this date.
+                        </td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

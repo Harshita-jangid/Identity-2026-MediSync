@@ -1,0 +1,10 @@
+<%- include('partials/header',{title}) %>
+    <section class="panel error-page">
+        <p class="eyebrow">REQUEST MESSAGE</p>
+        <h1>
+            <%= title %>
+        </h1>
+        <p>
+            <%= message %>
+        </p><a class="button" href="<%= admin?'/':'/admin/login' %>">Go back</a>
+    </section><%- include('partials/footer') %>

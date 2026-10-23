@@ -1,0 +1,242 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Health | MediSync</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+    }
+    .health-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 22px;
+    }
+    .status-dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      margin-right: 8px;
+      background: #94a3b8;
+    }
+    .good { color: #15803d; }
+    .bad { color: #b91c1c; }
+    .muted { color: #64748b; }
+  </style>
+</head>
+
+<body>
+  <main class="max-w-6xl mx-auto p-5 md:p-9">
+
+    <a href="/admin" class="text-blue-700 hover:underline">
+      ← Back to Admin
+    </a>
+
+    <header class="flex flex-wrap justify-between items-center gap-4 mt-7 mb-8">
+      <div>
+        <p class="text-blue-700 font-bold text-sm tracking-widest">
+          MEDISYNC MONITORING
+        </p>
+        <h1 class="text-3xl font-bold mt-2">Self-Healing Dashboard</h1>
+        <p class="text-slate-500 mt-2">
+          Monitor system health and automatic recovery.
+        </p>
+      </div>
+      <span id="overallStatus"
+        class="bg-slate-200 rounded-full px-4 py-2 text-sm font-semibold">
+        Checking...
+      </span>
+    </header>
+
+    <section class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="health-card">
+        <p class="muted">Application Server</p>
+        <h2 id="serverStatus" class="text-2xl font-bold mt-4">
+          Checking...
+        </h2>
+        <p class="text-sm muted mt-2">Express / Node.js</p>
+      </div>
+
+      <div class="health-card">
+        <p class="muted">MongoDB Database</p>
+        <h2 id="databaseStatus" class="text-2xl font-bold mt-4">
+          Checking...
+        </h2>
+        <p class="text-sm muted mt-2">Database connectivity</p>
+      </div>
+
+      <div class="health-card">
+        <p class="muted">PM2 Process</p>
+        <h2 id="pm2Status" class="text-2xl font-bold mt-4">
+          Not checked
+        </h2>
+        <p class="text-sm muted mt-2">Process manager status</p>
+      </div>
+
+      <div class="health-card">
+        <p class="muted">Automatic Restarts</p>
+        <h2 id="restartCount" class="text-2xl font-bold mt-4">—</h2>
+        <p class="text-sm muted mt-2">PM2 restart count</p>
+      </div>
+
+      <div class="health-card">
+        <p class="muted">Memory Usage</p>
+        <h2 id="memoryUsage" class="text-2xl font-bold mt-4">—</h2>
+        <p class="text-sm muted mt-2">Node.js process memory</p>
+      </div>
+
+      <div class="health-card">
+        <p class="muted">Monitoring</p>
+        <h2 class="text-2xl font-bold mt-4 good">Active</h2>
+        <p class="text-sm muted mt-2">Refreshes every 10 seconds</p>
+      </div>
+    </section>
+
+    <section class="health-card mt-6">
+      <div class="flex flex-wrap justify-between items-center gap-3">
+        <div>
+          <h2 class="text-xl font-bold">System Diagnostics</h2>
+          <p id="lastChecked" class="text-sm muted mt-2">
+            Waiting for first check...
+          </p>
+        </div>
+        <button id="checkButton"
+          class="bg-blue-700 hover:bg-blue-800 text-white
+                 px-5 py-3 rounded-xl">
+          Check Now
+        </button>
+      </div>
+
+      <p id="healthMessage" role="status" class="mt-5">
+        Initializing health check...
+      </p>
+    </section>
+
+    <section class="health-card mt-6">
+      <h2 class="text-xl font-bold">Recovery Event Log</h2>
+      <p class="text-sm muted mt-2">
+        Recent health-check results from this browser session.
+      </p>
+      <ul id="eventLog" class="mt-4 space-y-3">
+        <li class="muted text-sm">Waiting for health data...</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <script>
+    const $ = id => document.getElementById(id);
+
+    function addEvent(message) {
+      const item = document.createElement("li");
+      item.className = "text-sm border-b border-slate-100 pb-3";
+      item.textContent =
+        new Date().toLocaleTimeString() + " — " + message;
+
+      $("eventLog").prepend(item);
+
+      while ($("eventLog").children.length > 10) {
+        $("eventLog").lastElementChild.remove();
+      }
+    }
+
+    let previousState = "";
+
+    async function checkHealth() {
+      $("checkButton").disabled = true;
+
+      try {
+        const response = await fetch("/api/health", {
+          cache: "no-store"
+        });
+
+        const data = await response.json();
+
+        const serverOk = response.ok;
+        const dbOk = data.database === "connected";
+        const state = serverOk && dbOk ? "Healthy" : "Degraded";
+
+        $("serverStatus").textContent =
+          serverOk ? "Online" : "Degraded";
+        $("serverStatus").className =
+          "text-2xl font-bold mt-4 " + (serverOk ? "good" : "bad");
+
+        $("databaseStatus").textContent =
+          dbOk ? "Connected" : "Unavailable";
+        $("databaseStatus").className =
+          "text-2xl font-bold mt-4 " + (dbOk ? "good" : "bad");
+
+        $("overallStatus").textContent = state;
+        $("overallStatus").className =
+          "rounded-full px-4 py-2 text-sm font-semibold " +
+          (state === "Healthy"
+            ? "bg-green-100 text-green-800"
+            : "bg-red-100 text-red-800");
+
+        $("healthMessage").textContent =
+          state === "Healthy"
+            ? "Server and database health checks passed."
+            : "A health check failed. Check server logs.";
+
+        if (state !== previousState) {
+          addEvent("System state changed to " + state);
+          previousState = state;
+        }
+
+      } catch (error) {
+        $("serverStatus").textContent = "Unavailable";
+        $("serverStatus").className = "text-2xl font-bold mt-4 bad";
+        $("databaseStatus").textContent = "Unknown";
+        $("overallStatus").textContent = "Unavailable";
+        $("overallStatus").className =
+          "rounded-full px-4 py-2 text-sm font-semibold bg-red-100 text-red-800";
+        $("healthMessage").textContent =
+          "Cannot reach the health API. Check whether the server is running.";
+
+        if (previousState !== "Unavailable") {
+          addEvent("Health endpoint unreachable");
+          previousState = "Unavailable";
+        }
+      }
+
+      // PM2 status is provided by a separate protected backend endpoint.
+      // Until that endpoint is added, these values remain unavailable.
+      try {
+        const response = await fetch("/api/admin/pm2-status", {
+          cache: "no-store"
+        });
+
+        if (response.ok) {
+          const pm2 = await response.json();
+          $("pm2Status").textContent = pm2.status || "Unknown";
+          $("restartCount").textContent =
+            Number.isFinite(pm2.restarts) ? pm2.restarts : "—";
+          $("memoryUsage").textContent =
+            Number.isFinite(pm2.memoryMB)
+              ? pm2.memoryMB.toFixed(1) + " MB"
+              : "—";
+        } else {
+          $("pm2Status").textContent = "Unavailable";
+        }
+      } catch {
+        $("pm2Status").textContent = "Unavailable";
+      }
+
+      $("lastChecked").textContent =
+        "Last checked: " + new Date().toLocaleString();
+
+      $("checkButton").disabled = false;
+    }
+
+    $("checkButton").addEventListener("click", checkHealth);
+    checkHealth();
+    setInterval(checkHealth, 10000);
+  </script>
+</body>
+</html>

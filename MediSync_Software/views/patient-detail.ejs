@@ -1,0 +1,73 @@
+<%- include('partials/header',{title}) %>
+    <div class="page-heading">
+        <div>
+            <p class="eyebrow">PATIENT RECORD</p>
+            <h1>
+                <%= patient.name %>
+            </h1>
+        </div>
+        <div class="actions">
+            <a class="button" href="/patients/<%= patient._id %>/edit">Edit details</a>
+            <a class="button secondary" href="/patients">Back</a>
+        </div>
+    </div>
+    <section class="panel detail-grid">
+        <div>
+            <small>Age</small>
+            <b><%= patient.age %></b>
+        </div>
+        <div>
+            <small>Gender</small>
+            <b><%= patient.gender %></b>
+        </div>
+        <div>
+            <small>Phone</small>
+            <b><%= patient.phone %></b>
+        </div>
+        <div>
+            <small>Email</small>
+            <b><%= patient.email||'—' %></b>
+        </div>
+        <div class="full">
+            <small>Address</small>
+            <p><%= patient.address||'—' %></p>
+        </div>
+        <div class="full">
+            <small>Medical notes</small>
+            <p class="notes"><%= patient.medicalNotes||'No notes added.' %></p>
+        </div>
+    </section>
+    <section class="panel">
+        <h2>Appointment history</h2>
+        <% if(!appointments.length){ %>
+            <div class="empty">No appointments for this patient.</div>
+        <% }else{ %>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Token</th>
+                            <th>Doctor</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% appointments.forEach(a=>{ %)
+                            <tr)
+                                <td><%= a.tokenLabel %></td)
+                                <td><%= a.doctor?a.doctor.name:'Deleted doctor' %></td)
+                                <td><%= a.date %></td)
+                                <td><%= a.time %></td)
+                                <td><%= a.reason||'—' %></td)
+                                <td><%= a.status %></td)
+                            </tr)
+                        <% }) %)
+                    </tbody)
+                </table)
+            </div)
+        <% } %)
+    </section)
+    <%- include('partials/footer') %>

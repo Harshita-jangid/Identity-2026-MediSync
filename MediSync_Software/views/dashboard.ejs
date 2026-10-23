@@ -1,0 +1,74 @@
+<%- include('partials/header',{title}) %>
+    <section class="welcome">
+        <div>
+            <p class="eyebrow">CLINIC OVERVIEW · <%= t %>
+            </p>
+            <h1>Good care starts with good coordination.</h1>
+            <p>Manage patient records, doctors and the OPD queue in one workspace.</p>
+        </div><a class="button light" href="/appointments">＋ Book appointment</a>
+    </section>
+    <section class="stats">
+        <article class="stat"><span>Total patients</span><strong>
+                <%= patients %>
+            </strong><small>Registered records</small></article>
+        <article class="stat"><span>Active doctors</span><strong>
+                <%= doctors %>
+            </strong><small>Available profiles</small></article>
+        <article class="stat"><span>Today's appointments</span><strong>
+                <%= todays %>
+            </strong><small>Not completed/cancelled</small></article>
+        <article class="stat"><span>Waiting queue</span><strong>
+                <%= waiting %>
+            </strong><small>Booked or waiting today</small></article>
+    </section>
+    <section class="panel">
+        <div class="panel-head">
+            <div>
+                <h2>Recent appointments</h2>
+                <p>
+                    <%= total %> appointments in total
+                </p>
+            </div><a class="text-link" href="/appointments">View all →</a>
+        </div>
+        <% if(!recent.length){ %>
+            <div class="empty">Add patients and doctors, then book an appointment.</div>
+            <% }else{ %>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Token</th>
+                                <th>Patient</th>
+                                <th>Doctor</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% recent.forEach(a=>{ %><tr>
+                                    <td><b>
+                                            <%= a.tokenLabel %>
+                                        </b></td>
+                                    <td>
+                                        <%= a.patient?a.patient.name:'Deleted patient' %>
+                                    </td>
+                                    <td>
+                                        <%= a.doctor?a.doctor.name:'Deleted doctor' %>
+                                    </td>
+                                    <td>
+                                        <%= a.date %>
+                                    </td>
+                                    <td>
+                                        <%= a.time %>
+                                    </td>
+                                    <td><span class="status <%= a.status.toLowerCase().replace(/ /g,'-') %>">
+                                            <%= a.status %>
+                                        </span></td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+                <% } %>
+    </section><%- include('partials/footer') %>

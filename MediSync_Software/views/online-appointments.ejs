@@ -1,0 +1,49 @@
+
+<%- include('partials/header', { title }) %>
+
+<div class="page-heading">
+  <div>
+    <p class="eyebrow">WEBSITE BOOKINGS</p>
+    <h1>Online Appointments</h1>
+    <p>Appointments booked through the clinic website.</p>
+  </div>
+  <a class="button" href="/appointments">All Appointments</a>
+</div>
+
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Token</th>
+        <th>Patient</th>
+        <th>Phone</th>
+        <th>Doctor</th>
+        <th>Department</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (!appointments.length) { %>
+        <tr>
+          <td colspan="8">No online appointments found.</td>
+        </tr>
+      <% } %>  
+  <% appointments.forEach(a => { %>
+    <tr>
+      <td><%= a.tokenLabel || "-" %></td>
+      <td><%= a.patientName || "Patient unavailable" %></td>
+      <td><%= a.phone || "-" %></td>
+      <td><%= a.doctor || "-" %></td>
+      <td><%= a.department || "-" %></td>
+      <td><%= a.appointmentDate || a.date || "-" %></td>
+      <td><%= a.appointmentTime || a.time || "-" %></td>
+      <td><%= a.status || "Booked" %></td>
+    </tr>
+  <% }) %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('partials/footer') %>

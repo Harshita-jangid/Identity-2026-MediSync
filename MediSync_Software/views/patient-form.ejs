@@ -1,0 +1,26 @@
+<%- include('partials/header',{title}) %>
+    <div class="page-heading">
+        <div>
+            <p class="eyebrow">PATIENT DETAILS</p>
+            <h1>
+                <%= title %>
+            </h1>
+        </div><a class="button secondary" href="/patients">← Back</a>
+    </div>
+    <form class="panel form-grid" method="post" action="<%= action %>"><label>Full name *<input name="name" required
+                maxlength="100" value="<%= patient.name||'' %>"></label><label>Age *<input name="age" type="number"
+                min="0" max="120" required value="<%= patient.age??'' %>"></label><label>Gender *<select name="gender"
+                required>
+                <option value="">Select</option>
+                <% ['Female','Male','Other'].forEach(g=>{ %><option <%=patient.gender===g?'selected':'' %>><%= g %>
+                    </option>
+                    <% }) %>
+            </select></label><label>Phone *<input name="phone" required
+                value="<%= patient.phone||'' %>"></label><label>Email<input type="email" name="email"
+                value="<%= patient.email||'' %>"></label><label>Address<input name="address"
+                value="<%= patient.address||'' %>"></label><label class="full">Medical notes<textarea
+                name="medicalNotes" rows="4"><%= patient.medicalNotes||'' %></textarea></label>
+        <div class="form-actions full"><button class="button">
+                <%= submitLabel %>
+            </button><a class="button secondary" href="/patients">Cancel</a></div>
+    </form><%- include('partials/footer') %>
