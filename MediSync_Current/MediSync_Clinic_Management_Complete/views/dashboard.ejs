@@ -1,0 +1,280 @@
+<%- include('partials/header', { title }) %>
+<!-- Dashboard Hero -->
+<section class="welcome dashboard-hero">
+    <div class="hero-content">
+        <span class="hero-badge">
+            <span class="live-dot"></span>
+            CLINIC OVERVIEW · <%= t %>
+        </span>
+
+        <h1>
+            Better care.<br>
+            <span>Smarter coordination.</span>
+        </h1>
+
+        <p class="hero-description">
+            Manage patient records, coordinate doctors and monitor your
+            OPD queue — all from one simple workspace.
+        </p>
+
+        <div class="hero-actions">
+            <a class="button primary-action" href="/appointments">
+                <span>＋</span> Book Appointment
+            </a>
+
+            <a class="button health-action" href="/admin/system-health">
+                <span>⚙</span> Self-Healing Dashboard
+            </a>
+        </div>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+        <div class="hero-orbit orbit-one"></div>
+        <div class="hero-orbit orbit-two"></div>
+
+        <div class="medical-icon-card">
+            <span class="medical-cross">✚</span>
+            <span class="medical-caption">MediSync Care</span>
+        </div>
+
+        <div class="floating-card floating-top">
+            <span class="floating-icon">✓</span>
+            <div>
+                <strong>Care Connected</strong>
+                <small>One unified workspace</small>
+            </div>
+        </div>
+
+        <div class="floating-card floating-bottom">
+            <span class="online-indicator"></span>
+            <div>
+                <strong>Clinic Workspace</strong>
+                <small>Ready to manage</small>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Dashboard Statistics -->
+<section class="stats dashboard-stats">
+
+    <article class="stat modern-stat">
+        <div class="stat-top">
+            <span class="stat-label">Total Patients</span>
+            <span class="stat-icon patient-icon">♙</span>
+        </div>
+
+        <strong class="stat-number"><%= patients %></strong>
+
+        <div class="stat-bottom">
+            <span class="stat-indicator blue-indicator"></span>
+            <small>Registered patient records</small>
+        </div>
+    </article>
+
+    <article class="stat modern-stat">
+        <div class="stat-top">
+            <span class="stat-label">Active Doctors</span>
+            <span class="stat-icon doctor-icon">✚</span>
+        </div>
+
+        <strong class="stat-number"><%= doctors %></strong>
+
+        <div class="stat-bottom">
+            <span class="stat-indicator green-indicator"></span>
+            <small>Available doctor profiles</small>
+        </div>
+    </article>
+
+    <article class="stat modern-stat">
+        <div class="stat-top">
+            <span class="stat-label">Today's Appointments</span>
+            <span class="stat-icon appointment-icon">▦</span>
+        </div>
+
+        <strong class="stat-number"><%= todays %></strong>
+
+        <div class="stat-bottom">
+            <span class="stat-indicator purple-indicator"></span>
+            <small>Appointments scheduled today</small>
+        </div>
+    </article>
+
+    <article class="stat modern-stat">
+        <div class="stat-top">
+            <span class="stat-label">Waiting Queue</span>
+            <span class="stat-icon queue-icon">◷</span>
+        </div>
+
+        <strong class="stat-number"><%= waiting %></strong>
+
+        <div class="stat-bottom">
+            <span class="stat-indicator orange-indicator"></span>
+            <small>Booked or waiting today</small>
+        </div>
+    </article>
+
+</section>
+
+<!-- Recent Appointments -->
+<section class="panel appointments-panel">
+
+    <div class="panel-head appointments-heading">
+        <div>
+            <span class="section-kicker">APPOINTMENT MANAGEMENT</span>
+            <h2>Recent Appointments</h2>
+            <p>
+                A quick look at the latest clinic appointments.
+                <strong><%= total %></strong> appointments in total.
+            </p>
+        </div>
+
+        <a class="text-link view-all-link" href="/appointments">
+            View all appointments <span>→</span>
+        </a>
+    </div>
+
+    <% if (!recent.length) { %>
+
+        <div class="empty modern-empty">
+            <div class="empty-icon">▦</div>
+            <h3>No appointments yet</h3>
+            <p>
+                Once you add patients and doctors, you can book
+                appointments and manage them here.
+            </p>
+
+            <a class="button primary-action" href="/appointments">
+                ＋ Book First Appointment
+            </a>
+        </div>
+
+    <% } else { %>
+
+        <div class="table-wrap modern-table-wrap">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th>Token</th>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% recent.forEach(a => { %>
+                        <tr>
+                            <td>
+                                <span class="token-chip">
+                                    <%= a.tokenLabel || '—' %>
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="person-cell">
+                                    <span class="person-avatar patient-avatar">
+                                        <%= a.patient && a.patient.name
+                                            ? a.patient.name.trim().charAt(0).toUpperCase()
+                                            : 'P' %>
+                                    </span>
+
+                                    <span class="person-name">
+                                        <%= a.patient
+                                            ? a.patient.name
+                                            : 'Deleted patient' %>
+                                    </span>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="person-cell">
+                                    <span class="person-avatar doctor-avatar">✚</span>
+
+                                    <span class="person-name">
+                                        <%= a.doctor
+                                            ? a.doctor.name
+                                            : 'Deleted doctor' %>
+                                    </span>
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="date-value">
+                                    <%= a.date %>
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="time-value">
+                                    <%= a.time %>
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="status <%= String(a.status || 'Booked').toLowerCase().replace(/ /g, '-') %>">
+                                    <%= a.status || 'Booked' %>
+                                </span>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+
+    <% } %>
+
+</section>
+
+<!-- Quick Actions -->
+<section class="quick-actions-section">
+    <div class="quick-actions-heading">
+        <span class="section-kicker">QUICK ACCESS</span>
+        <h2>Make your next move</h2>
+        <p>Access important clinic tools in one click.</p>
+    </div>
+
+    <div class="quick-actions-grid">
+
+        <a class="quick-action-card" href="/patients">
+            <span class="quick-action-icon patient-quick-icon">♙</span>
+            <span class="quick-action-content">
+                <strong>Patients</strong>
+                <small>Manage patient records</small>
+            </span>
+            <span class="quick-arrow">↗</span>
+        </a>
+
+        <a class="quick-action-card" href="/doctors">
+            <span class="quick-action-icon doctor-quick-icon">✚</span>
+            <span class="quick-action-content">
+                <strong>Doctors</strong>
+                <small>View doctor profiles</small>
+            </span>
+            <span class="quick-arrow">↗</span>
+        </a>
+
+        <a class="quick-action-card" href="/queue">
+            <span class="quick-action-icon queue-quick-icon">◷</span>
+            <span class="quick-action-content">
+                <strong>OPD Queue</strong>
+                <small>Monitor patient waiting</small>
+            </span>
+            <span class="quick-arrow">↗</span>
+        </a>
+
+        <a class="quick-action-card" href="/reports">
+            <span class="quick-action-icon report-quick-icon">▤</span>
+            <span class="quick-action-content">
+                <strong>Reports</strong>
+                <small>Review clinic activity</small>
+            </span>
+            <span class="quick-arrow">↗</span>
+        </a>
+
+    </div>
+</section>
+
+<%- include('partials/footer') %>

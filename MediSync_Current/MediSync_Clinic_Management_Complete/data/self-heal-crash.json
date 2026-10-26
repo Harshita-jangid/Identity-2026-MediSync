@@ -1,0 +1,8 @@
+{
+  "id": "crash-1793033326401",
+  "type": "watchdog",
+  "status": "recovered",
+  "message": "Application restarted and MongoDB connection was restored.",
+  "detectedAt": "2026-10-26T16:48:46.401Z",
+  "recoveredAt": "2026-10-26T16:48:47.820Z"
+}

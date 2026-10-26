@@ -1,0 +1,808 @@
+<%- include('partials/header', { title }) %>
+    <main>
+      <header class="top">
+        <div>
+          <div class="eyebrow">MEDISYNC · RESILIENCE CONSOLE</div>
+          <h1>Self-Healing Control Center</h1>
+          <p class="muted">
+            Monitor failures, switch recovery policies, run safe diagnostics,
+            and review incidents from one place.
+          </p>
+        </div>
+        <div id="overall" class="pill">
+          <span class="dot"></span><span>Checking system…</span>
+        </div>
+      </header>
+      <section class="grid">
+        <article class="card">
+          <div class="metric-label">Application</div>
+          <div class="metric" id="appStatus">Checking…</div>
+          <div class="small" id="uptime">Uptime —</div>
+        </article>
+        <article class="card">
+          <div class="metric-label">MongoDB</div>
+          <div class="metric" id="dbStatus">Checking…</div>
+          <div class="small">Clinic database connection</div>
+        </article>
+        <article class="card">
+          <div class="metric-label">Memory (RSS)</div>
+          <div class="metric" id="memory">—</div>
+          <div class="small" id="runtime">Node.js runtime</div>
+        </article>
+        <article class="card">
+          <div class="metric-label">Incidents detected</div>
+          <div class="metric" id="detected">0</div>
+          <div class="small">
+            <span id="recovered">0</span> handled/recovered ·
+            <span id="blocked">0</span> blocked
+          </div>
+        </article>
+      </section>
+      <section class="section">
+        <div class="section-title">
+          <div>
+            <h2>Recovery mechanisms</h2>
+            <p>
+              Toggle each policy and use its test button to compare ON vs OFF
+              behavior.
+            </p>
+          </div>
+          <button class="primary" id="refresh">↻ Refresh status</button>
+        </div>
+        <div class="mechanisms">
+          <article class="card mechanism">
+            <div class="mech-head">
+              <div>
+                <h3>01 · Watchdog & health checks</h3>
+                <p>
+                  Checks app/database health. Real crash recovery requires
+                  running the app under PM2.
+                </p>
+              </div>
+              <span id="badge-watchdog" class="state">—</span>
+            </div>
+            <div class="actions">
+              <button data-toggle="watchdog">Enable / disable</button
+              ><button data-test="watchdog">Run live health probe</button
+              ><button
+                id="crashTest"
+                class="danger"
+                title="Requires PM2 and ENABLE_CRASH_TEST=true"
+              >
+                Real PM2 crash test
+              </button>
+            </div>
+          </article>
+          <article class="card mechanism">
+            <div class="mech-head">
+              <div>
+                <h3>02 · Offline-first action queue</h3>
+                <p>
+                  Queues demo actions in this browser when offline and syncs
+                  them when the connection returns.
+                </p>
+              </div>
+              <span id="badge-offlineQueue" class="state">—</span>
+            </div>
+            <div class="small">
+              Browser network: <b id="network">Checking…</b>
+            </div>
+            <div class="actions">
+              <button data-toggle="offlineQueue">Enable / disable</button
+              ><button
+                type="button"
+                onclick="window.location.href = '/admin/offline-booking'">
+                Book offline appointment
+              </button>
+              </div>
+          </article>
+          <article class="card mechanism">
+            <div class="mech-head">
+              <div>
+                <h3>03 · Rate limiting / load shedding</h3>
+                <p>
+                  Actually sends 130 requests to the running server so you can
+                  see allowed responses versus HTTP 429 throttling.
+                </p>
+              </div>
+              <span id="badge-rateLimit" class="state">—</span>
+            </div>
+            <div class="small">
+              When disabled, the application stops applying this limiter. Avoid
+              disabling on a public deployment.
+            </div>
+            <div class="actions">
+              <button data-toggle="rateLimit">Enable / disable</button
+              ><button data-test="load">Send 130 real requests</button>
+            </div>
+          </article>
+          <article class="card mechanism">
+            <div class="mech-head">
+              <div>
+                <h3>04 · Database Failure & Recovery</h3>
+                <p>Disconnect the application from MongoDB and test recovery.</p>
+              </div>
+              <span id="badge-database" class="state">—</span>
+            </div>
+             <div class="small">
+                Failure started: <b id="dbFailureTime">—</b><br>
+                Recovery completed: <b id="dbRecoveredTime">—</b><br>
+                Total downtime: <b id="dbDowntime">—</b><br>
+                Recovery duration: <b id="dbRecoveryDuration">—</b>
+              </div>
+           <div class="actions">
+              <button type="button" id="disconnectDbBtn" class="danger">
+                Disconnect Database
+              </button>
+              <button type="button" id="recoverDbBtn" class="primary">
+                Recover Database
+              </button>
+            </div>
+            <p id="dbDemoMessage" class="small" role="status" aria-live="polite"></p>
+          </article>
+          
+          <!-- 05 · MongoDB Storage Failure -->
+          <article class="card mechanism">
+            <div class="mech-head">
+              <div>
+                <h3>05 · MongoDB Storage Failure</h3>
+                <p>
+                  Simulate full storage to test appointment-save failures.
+                  Restore storage to allow new saves and offline sync again.
+                </p>
+              </div>
+              <span id="badge-storage" class="state">Checking…</span>
+            </div>
+
+            <div class="small">
+              Simulated storage used: <b id="storageUsed">—</b><br>
+              Simulated free space: <b id="storageFree">—</b><br>
+              Failed save attempts: <b id="storageAttempts">0</b><br>
+              Failure started: <b id="storageFailureTime">—</b>
+            </div>
+
+            <div class="actions">
+              <button type="button" id="storageFullBtn" class="danger">
+                Simulate Storage Full
+              </button>
+              <button type="button" id="storageResetBtn" class="primary">
+                Restore Storage
+              </button>
+              <button type="button" id="storageRefreshBtn">
+                Refresh Storage Status
+              </button>
+            </div>
+
+            <p id="storageMessage" class="small" role="status"
+               aria-live="polite"></p>
+          </article>
+
+        </div>
+        <div id="notice" class="notice" role="status">
+          Loading self-healing status…
+        </div>
+      </section>
+      <section class="section cols">
+        <article class="card">
+          <div class="section-title">
+            <div>
+              <h2>Incident & recovery log</h2>
+              <p>
+                Latest server-side events (not just browser-session messages).
+              </p>
+            </div>
+            <button id="clearView">Clear view</button>
+          </div>
+          <ul id="events" class="log">
+            <li class="muted">Loading events…</li>
+          </ul>
+        </article>
+      </section>
+      <p class="footer-note">
+        Automatic restart only works while PM2 (or an OS/container supervisor)
+        is supervising the Node.js process. Dashboard simulation buttons create
+        controlled demo incidents; they do not deliberately corrupt real patient
+        data.
+      </p>
+    </main>
+    <script>
+      
+const $ = (id) => document.getElementById(id);
+let current = { controls: {}, incidents: [], counters: {} };
+
+function notify(message, type = "") {
+  const n = $("notice");
+  if (!n) return;
+  n.textContent = message;
+  n.className = "notice " + type;
+}
+
+async function api(url, options = {}) {
+  const r = await fetch(url, {
+    cache: "no-store",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
+  });
+  let d = {};
+  try {
+    d = await r.json();
+  } catch {}
+  if (!r.ok) throw new Error(d.error || `Request failed (${r.status})`);
+  return d;
+}
+
+function renderEvents(items) {
+  const ul = $("events");
+  if (!ul) return;
+
+  ul.replaceChildren();
+
+  if (!Array.isArray(items) || items.length === 0) {
+    const li = document.createElement("li");
+    li.className = "muted";
+    li.textContent = "No incidents recorded yet.";
+    ul.append(li);
+    return;
+  }
+
+  for (const e of items) {
+    const li = document.createElement("li");
+    const time = document.createElement("span");
+    const msg = document.createElement("div");
+
+    time.className = "logtime";
+
+    const eventTime = e.time || e.detectedAt || e.recoveredAt;
+    const parsedTime = eventTime ? new Date(eventTime) : null;
+
+    time.textContent =
+      parsedTime && !Number.isNaN(parsedTime.getTime())
+        ? parsedTime.toLocaleString()
+        : "Time unavailable";
+
+    const isRecovered =
+      e.recovered === true || e.status === "recovered";
+
+    msg.textContent =
+      `${isRecovered ? "✓ RECOVERED" : "⚠ DETECTED"} · ` +
+      `${e.type || "system"}: ` +
+      `${e.message || e.recoveryMessage || "System event recorded"}`;
+
+    li.append(time, msg);
+    ul.append(li);
+  }
+}
+
+async function refresh() {
+  try {
+    const [d, healthResponse] = await Promise.all([
+      api("/api/admin/self-heal/status"),
+      fetch("/api/health", {
+        cache: "no-store",
+        credentials: "same-origin"
+      })
+    ]);
+
+    if (!healthResponse.ok) {
+      throw new Error(`Health check failed: HTTP ${healthResponse.status}`);
+    }
+
+    // Read the health response only once.
+    const health = await healthResponse.json();
+    current = d;
+
+    // Determine database status before calculating application status.
+    const databaseValue = health.database ?? d.database;
+
+    const dbConnected =
+      databaseValue === "connected" ||
+      databaseValue === true ||
+      databaseValue?.connected === true;
+
+    $("dbStatus").textContent =
+      dbConnected ? "Connected" : "Disconnected";
+
+    $("dbStatus").className =
+      "metric " + (dbConnected ? "online" : "offline");
+
+    // Application availability and health are separate.
+    const appIsOnline = health.application === "online";
+
+    const appIsHealthy =
+      appIsOnline &&
+      health.status === "healthy" &&
+      dbConnected;
+
+    $("appStatus").textContent =
+      !appIsOnline
+        ? "Unavailable"
+        : appIsHealthy
+          ? "Online"
+          : "Degraded";
+
+    $("appStatus").className =
+      "metric " + (
+        !appIsOnline
+          ? "offline"
+          : appIsHealthy
+            ? "online"
+            : "degraded"
+      );
+
+    // Uptime
+    const uptimeValue = health.uptimeSeconds ?? d.uptimeSeconds;
+
+    if (
+      uptimeValue !== null &&
+      uptimeValue !== undefined &&
+      Number.isFinite(Number(uptimeValue)) &&
+      Number(uptimeValue) >= 0
+    ) {
+      const total = Math.floor(Number(uptimeValue));
+      const hours = Math.floor(total / 3600);
+      const minutes = Math.floor((total % 3600) / 60);
+      const seconds = total % 60;
+
+      $("uptime").textContent =
+        `Uptime ${hours}h ${minutes}m ${seconds}s`;
+    } else {
+      $("uptime").textContent = "Uptime unavailable";
+    }
+
+    // Memory and runtime
+    const memoryValue = health.memoryMB ?? d.memoryMB;
+
+    $("memory").textContent =
+      memoryValue !== null &&
+      memoryValue !== undefined &&
+      Number.isFinite(Number(memoryValue))
+        ? `${Number(memoryValue)} MB`
+        : "Unavailable";
+
+    $("runtime").textContent =
+      [health.node ?? d.node, health.platform ?? d.platform]
+        .filter(Boolean)
+        .join(" · ") || "Runtime unavailable";
+
+    // Recovery counters
+    $("detected").textContent = d.counters?.detected ?? 0;
+    $("recovered").textContent = d.counters?.recovered ?? 0;
+    $("blocked").textContent = d.counters?.blocked ?? 0;
+
+    // Persistent PM2 crash recovery record
+    const recoveryBox = $("crashRecoveryStatus");
+    const crash = d.crashRecovery || d.lastCrash || null;
+
+    if (recoveryBox) {
+      if (!crash) {
+        recoveryBox.textContent = "No crash test recorded.";
+        recoveryBox.style.color = "";
+      } else if (crash.status === "recovered") {
+        const failureTime = crash.detectedAt
+          ? new Date(crash.detectedAt).toLocaleString()
+          : "Unavailable";
+
+        const recoveryTime = crash.recoveredAt
+          ? new Date(crash.recoveredAt).toLocaleString()
+          : "Unavailable";
+
+        recoveryBox.textContent =
+          `RECOVERED | Failure: ${failureTime} | Recovery: ${recoveryTime}`;
+
+        recoveryBox.style.color = "#126846";
+      } else {
+        recoveryBox.textContent =
+          "Failure detected. Waiting for recovery confirmation.";
+
+        recoveryBox.style.color = "#a12e2e";
+      }
+    }
+
+    // Overall system health
+    $("overall").replaceChildren();
+
+    const dot = document.createElement("span");
+    dot.className = "dot";
+
+    const overallText = document.createElement("span");
+    overallText.textContent = appIsHealthy
+      ? "System healthy"
+      : appIsOnline
+        ? "Application online · System degraded"
+        : "Application unavailable";
+
+    $("overall").append(dot, overallText);
+    $("overall").style.background =
+      appIsHealthy ? "#e7f7ef" : "#fff0f0";
+    $("overall").style.color =
+      appIsHealthy ? "#126846" : "#a12e2e";
+
+    // Recovery mechanism badges
+    for (const name of ["watchdog", "offlineQueue", "rateLimit"]) {
+      const badge = $("badge-" + name);
+      if (!badge) continue;
+
+      const enabled = Boolean(d.controls?.[name]);
+
+      badge.textContent = enabled ? "ENABLED" : "DISABLED";
+      badge.className = "state " + (enabled ? "on" : "off");
+    }
+
+    // Database demo status
+    renderDatabaseDemo({
+      ...d,
+      database: dbConnected ? "connected" : "disconnected"
+    });
+
+    // Storage simulation status
+    await refreshStorageStatus();
+
+    // Incident history
+    const events = Array.isArray(d.incidents)
+      ? [...d.incidents]
+      : [];
+
+    if (crash) {
+      events.unshift({
+        time: crash.recoveredAt || crash.detectedAt,
+        type: "PM2 crash recovery",
+        message: crash.message || "Crash recovery record found.",
+        recovered: crash.status === "recovered",
+        status: crash.status
+      });
+    }
+
+    renderEvents(events);
+
+    notify(
+      appIsHealthy
+        ? "System status refreshed. Application and MongoDB are healthy."
+        : appIsOnline
+          ? "Application is online, but the system is degraded."
+          : "Application unavailable.",
+      appIsHealthy ? "good" : "error"
+    );
+
+  } catch (error) {
+    // A failed health request means the server cannot currently be reached.
+    $("appStatus").textContent = "Unavailable";
+    $("appStatus").className = "metric offline";
+
+    $("dbStatus").textContent = "Unavailable";
+    $("dbStatus").className = "metric offline";
+
+    $("overall").replaceChildren();
+
+    const dot = document.createElement("span");
+    dot.className = "dot";
+
+    const message = document.createElement("span");
+    message.textContent = "Application unavailable";
+
+    $("overall").append(dot, message);
+    $("overall").style.background = "#fff0f0";
+    $("overall").style.color = "#a12e2e";
+
+    notify(
+      "Health check unavailable. Waiting for server recovery.",
+      "error"
+    );
+  }
+}
+
+let storageActionInProgress = false;
+
+async function refreshStorageStatus() {
+  try {
+    const d = await api("/api/admin/self-heal/mongodb-storage-status");
+
+    $("badge-storage").textContent = d.enabled
+      ? "FAILURE ACTIVE"
+      : "STORAGE NORMAL";
+
+    $("badge-storage").className =
+      "state " + (d.enabled ? "off" : "on");
+
+    $("storageUsed").textContent =
+      `${d.simulatedUsedPercent ?? "—"}%`;
+
+    $("storageFree").textContent =
+      `${d.simulatedFreeSpaceGB ?? "—"} GB`;
+
+    $("storageAttempts").textContent =
+      d.failedAttempts ?? 0;
+
+    $("storageFailureTime").textContent =
+      d.failureStartedAt
+        ? new Date(d.failureStartedAt).toLocaleString()
+        : "—";
+
+    $("storageFullBtn").disabled =
+      !!d.enabled || storageActionInProgress;
+
+    $("storageResetBtn").disabled =
+      !d.enabled || storageActionInProgress;
+
+  } catch (e) {
+    $("badge-storage").textContent = "UNAVAILABLE";
+    $("badge-storage").className = "state off";
+    $("storageMessage").textContent = e.message;
+  }
+}
+
+async function setStorageFailure(enable) {
+  if (storageActionInProgress) return;
+
+  if (
+    enable &&
+    !confirm(
+      "Simulate MongoDB storage full? Appointment saves and offline sync will be blocked."
+    )
+  ) {
+    return;
+  }
+
+  storageActionInProgress = true;
+  $("storageFullBtn").disabled = true;
+  $("storageResetBtn").disabled = true;
+  $("storageMessage").textContent = "Updating storage simulation…";
+
+  try {
+    const endpoint = enable
+      ? "/api/admin/self-heal/mongodb-storage-full"
+      : "/api/admin/self-heal/mongodb-storage-reset";
+
+    const d = await api(endpoint, {
+      method: "POST",
+      body: JSON.stringify({})
+    });
+
+    $("storageMessage").textContent = d.message;
+    notify(d.message, "good");
+
+    await refresh();
+  } catch (e) {
+    $("storageMessage").textContent = e.message;
+    notify(e.message, "error");
+  } finally {
+    storageActionInProgress = false;
+    await refreshStorageStatus();
+  }
+}
+
+$("storageFullBtn")?.addEventListener("click", () => {
+  setStorageFailure(true);
+});
+
+$("storageResetBtn")?.addEventListener("click", () => {
+  setStorageFailure(false);
+});
+
+$("storageRefreshBtn")?.addEventListener("click", refreshStorageStatus);
+
+//database
+let databaseActionInProgress = false;
+
+function duration(ms) {
+  if (ms == null || !Number.isFinite(Number(ms))) return "—";
+
+  const seconds = Math.floor(Number(ms) / 1000);
+  return `${Math.floor(seconds / 60)}m ${seconds % 60}s`;
+}
+
+function renderDatabaseDemo(d) {
+  const demo = d.databaseDemo || {};
+  const connected = d.database === "connected";
+  const busy = databaseActionInProgress || demo.disconnecting || demo.recovering;
+
+  $("badge-database").textContent = busy
+    ? "IN PROGRESS"
+    : connected ? "CONNECTED" : "DISCONNECTED";
+
+  $("badge-database").className =
+    "state " + (connected ? "on" : "off");
+
+  $("dbFailureTime").textContent = demo.failureStartedAt
+    ? new Date(demo.failureStartedAt).toLocaleString()
+    : "—";
+
+  $("dbRecoveredTime").textContent = demo.recoveredAt
+    ? new Date(demo.recoveredAt).toLocaleString()
+    : "—";
+
+  $("dbDowntime").textContent = duration(demo.currentDowntimeMs);
+  $("dbRecoveryDuration").textContent = duration(demo.lastRecoveryMs);
+
+  $("disconnectDbBtn").disabled = !connected || busy;
+  $("recoverDbBtn").disabled = connected || busy;
+}
+
+async function runDatabaseAction(action) {
+  if (databaseActionInProgress) return;
+
+  if (action === "disconnect" &&
+      !confirm("Disconnect MediSync from MongoDB? Database-dependent features may stop working until recovery.")) {
+    return;
+  }
+
+  databaseActionInProgress = true;
+  $("disconnectDbBtn").disabled = true;
+  $("recoverDbBtn").disabled = true;
+  $("dbDemoMessage").textContent = "Please wait...";
+
+  try {
+    const endpoint = action === "disconnect"
+      ? "/api/admin/self-heal/database-disconnect"
+      : "/api/admin/self-heal/database-recover";
+
+    const result = await api(endpoint, {
+      method: "POST",
+      body: JSON.stringify({})
+    });
+
+    $("dbDemoMessage").textContent = result.message;
+  } catch (err) {
+    $("dbDemoMessage").textContent = err.message;
+  } finally {
+    databaseActionInProgress = false;
+    await refresh();
+  }
+}
+
+$("disconnectDbBtn").addEventListener("click", () => {
+  runDatabaseAction("disconnect");
+});
+
+$("recoverDbBtn").addEventListener("click", () => {
+  runDatabaseAction("recover");
+});
+
+async function toggle(name) {
+  try {
+    const enabled = !current.controls?.[name];
+    await api("/api/admin/self-heal/control", {
+      method: "POST",
+      body: JSON.stringify({ name, enabled }),
+    });
+    notify(`${name} ${enabled ? "enabled" : "disabled"}.`, "good");
+    await refresh();
+  } catch (e) {
+    notify(e.message, "error");
+  }
+}
+
+async function simulate(kind) {
+  if (kind === "load") {
+  const total = 130;
+  notify(`Sending ${total} real requests to MediSync...`);
+
+  const results = await Promise.all(
+    Array.from({ length: total }, async () => {
+      try {
+        const r = await fetch(
+          "/api/admin/self-heal/load-probe",
+          {
+            method: "GET",
+            cache: "no-store",
+            credentials: "same-origin"
+          }
+        );
+
+        if (r.status === 429) return "limited";
+        if (r.status === 200) return "passed";
+        return "failed";
+      } catch {
+        return "failed";
+      }
+    })
+  );
+
+  const passed = results.filter(x => x === "passed").length;
+  const limited = results.filter(x => x === "limited").length;
+  const failed = results.filter(x => x === "failed").length;
+
+  try {
+    const d = await api("/api/admin/self-heal/simulate", {
+      method: "POST",
+      body: JSON.stringify({
+        kind: "load",
+        total,
+        passed,
+        limited,
+        failed
+      })
+    });
+
+    notify(
+      `Completed: ${passed} allowed, ${limited} throttled (429), ${failed} failed.`,
+      limited > 0 ? "good" : ""
+    );
+
+    await refresh();
+  } catch (e) {
+    notify(
+      `Requests finished: ${passed} allowed, ${limited} throttled, ${failed} failed. Log: ${e.message}`,
+      "error"
+    );
+  }
+
+  return;
+}
+  if (kind === "watchdog") {
+    try {
+      const started = performance.now();
+      const r = await fetch("/api/health", { cache: "no-store" });
+      const ms = Math.round(performance.now() - started);
+      const d = await api("/api/admin/self-heal/simulate", {
+        method: "POST",
+        body: JSON.stringify({ kind, probeStatus: r.status, probeMs: ms }),
+      });
+      notify(`Health probe: HTTP ${r.status}, ${ms} ms. ${d.incident?.message || ""}`, r.ok && current.controls?.watchdog ? "good" : "error");
+      await refresh();
+      return;
+    } catch (e) {
+      notify(`Health probe failed: ${e.message}`, "error");
+      return;
+    }
+  }
+
+  try {
+    const d = await api("/api/admin/self-heal/simulate", {
+      method: "POST",
+      body: JSON.stringify({ kind }),
+    });
+    notify(d.incident?.message || "Simulation completed.", d.incident?.recovered ? "good" : "error");
+    await refresh();
+  } catch (e) {
+    notify(e.message, "error");
+  }
+}
+
+function network() {
+  const networkElement = $("network");
+  if (!networkElement) return;
+  const on = navigator.onLine;
+  networkElement.textContent = on ? "Online" : "Offline";
+  networkElement.className = on ? "online" : "offline";
+}
+
+document.querySelectorAll("[data-toggle]").forEach((b) => {
+  b.addEventListener("click", () => toggle(b.dataset.toggle));
+});
+document.querySelectorAll("[data-test]").forEach((b) => {
+  b.addEventListener("click", () => simulate(b.dataset.test));
+});
+$("refresh")?.addEventListener("click", refresh);
+$("clearView")?.addEventListener("click", () => {
+  const events = $("events");
+  if (!events) return;
+  events.replaceChildren();
+  const li = document.createElement("li");
+  li.className = "muted";
+  li.textContent = "View cleared. Server incident history remains saved.";
+  events.append(li);
+});
+$("crashTest")?.addEventListener("click", async () => {
+  if (!confirm("This will deliberately stop the Node.js process. Use only in a local PM2 demo. Continue?")) return;
+  try {
+    const d = await api("/api/admin/self-heal/crash-test", {
+      method: "POST",
+      body: JSON.stringify({}),
+    });
+    notify(d.message || "Crash test requested.", "good");
+  } catch (e) {
+    notify(e.message, "error");
+  }
+});
+
+window.addEventListener("online", network);
+window.addEventListener("offline", network);
+network();
+refresh();
+setInterval(refresh, 3000);
+
+    </script>
+<%- include('partials/footer') %>

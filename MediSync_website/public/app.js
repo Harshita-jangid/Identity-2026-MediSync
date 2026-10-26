@@ -85,7 +85,7 @@ form?.addEventListener("submit", async (event) => {
       department: String(data.get("department") || "").trim(),
       appointmentDate: String(data.get("date") || ""),
       appointmentTime: String(data.get("time") || ""),
-      reason: String(data.get("reason") || "").trim()
+      reason: String(data.get("reason") || "").trim(),
     };
 
     // Validate required fields
@@ -109,16 +109,16 @@ form?.addEventListener("submit", async (event) => {
     const response = await fetch("/api/appointments", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     const result = await response.json().catch(() => ({}));
 
     if (!response.ok) {
       throw new Error(
-        result.message || `Booking failed. Server error: ${response.status}`
+        result.message || `Booking failed. Server error: ${response.status}`,
       );
     }
 
@@ -137,22 +137,20 @@ form?.addEventListener("submit", async (event) => {
 
     showMessage(
       `Appointment booked successfully! Reference ID: ${reference}.${token} Please contact the clinic if you need to change your booking.`,
-      "success"
+      "success",
     );
-
   } catch (error) {
     console.error("Appointment booking error:", error);
 
     showMessage(
       error.message ||
         "Could not connect to the server. Please check the server and MongoDB.",
-      "error"
+      "error",
     );
-
   } finally {
     if (submitButton) {
       submitButton.disabled = false;
-      submitButton.innerHTML = 'Request appointment <span>→</span>';
+      submitButton.innerHTML = "Request appointment <span>→</span>";
     }
   }
 });
@@ -178,11 +176,10 @@ if (appointmentList) {
 if (refreshBtn) {
   refreshBtn.addEventListener("click", () => {
     showMessage(
-      "Please contact the clinic with your appointment reference ID to check your booking."
+      "Please contact the clinic with your appointment reference ID to check your booking.",
     );
   });
 }
-
 
 async function loadDoctors() {
   const doctorSelect = document.getElementById("doctorSelect");
@@ -199,8 +196,7 @@ async function loadDoctors() {
 
     // Appointment form dropdown
     if (doctorSelect) {
-      doctorSelect.innerHTML =
-        '<option value="">Select doctor</option>';
+      doctorSelect.innerHTML = '<option value="">Select doctor</option>';
 
       doctors.forEach((doctor) => {
         const option = document.createElement("option");
@@ -228,13 +224,6 @@ async function loadDoctors() {
         const card = document.createElement("article");
         card.className = "doctor-card";
 
-        const art = document.createElement("div");
-        art.className = `doctor-art doctor-${["one", "two", "three"][index % 3]}`;
-
-        const emoji = document.createElement("span");
-        emoji.textContent = "🩺";
-        art.appendChild(emoji);
-
         const info = document.createElement("div");
         info.className = "doctor-info";
 
@@ -251,7 +240,7 @@ async function loadDoctors() {
 
         const link = document.createElement("a");
         link.href = "#book";
-        link.textContent = "Book consultation ↗";
+        link.textContent = "Book consultation";
 
         link.addEventListener("click", () => {
           if (doctorSelect) {
@@ -260,7 +249,7 @@ async function loadDoctors() {
         });
 
         info.append(badge, name, specialization, link);
-        card.append(art, info);
+        card.append(info);
         doctorGrid.appendChild(card);
       });
     }
@@ -280,4 +269,3 @@ async function loadDoctors() {
 }
 
 loadDoctors();
-

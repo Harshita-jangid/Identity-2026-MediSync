@@ -55,19 +55,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% appointments.forEach(a=>{ %)
-                            <tr)
-                                <td><%= a.tokenLabel %></td)
-                                <td><%= a.doctor?a.doctor.name:'Deleted doctor' %></td)
-                                <td><%= a.date %></td)
-                                <td><%= a.time %></td)
-                                <td><%= a.reason||'—' %></td)
-                                <td><%= a.status %></td)
-                            </tr)
-                        <% }) %)
-                    </tbody)
-                </table)
-            </div)
-        <% } %)
-    </section)
+                        <% appointments.forEach(a=>{ %>
+                            <tr>
+                                <td><%= a.tokenLabel %></td>
+                                <td><%= a.doctor?a.doctor.name:'Deleted doctor' %></td>
+                                <td><%= a.date %></td>
+                                <td><%= a.time %></td>
+                                <td><%= a.reason||'—' %></td>
+                                <td><%= a.status %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </section>
     <%- include('partials/footer') %>

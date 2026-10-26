@@ -8,7 +8,10 @@
       content="MediSync Clinic Management and Appointment Booking"
     />
     <title>MediSync | Modern Clinic Care</title>
-
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -22,7 +25,6 @@
   <body>
     <header class="topbar">
       <a class="brand" href="#home">
-        <span class="brand-icon">✚</span>
         <span>Medi<span>Sync</span></span>
       </a>
 
@@ -39,17 +41,23 @@
         <a href="#home">Home</a>
         <a href="#services">Services</a>
         <a href="#doctors">Our Doctors</a>
-        <a class="nav-cta" href="#book">Book Appointment ↗</a>
+        <a class="nav-cta" href="#book">Book Appointment </a>
       </nav>
     </header>
 
     <main>
       <!-- HERO SECTION -->
       <section class="hero" id="home">
-        <div class="hero-copy">
-          <div class="eyebrow">
-            <span class="dot"></span> YOUR HEALTH, OUR PRIORITY
+        <div class="hero-visual">
+          <div class="hero-photo">
+            <div class="photo-overlay">
+              <span>✦ HEALTHCARE WITH HEART</span>
+              <h3>A healthier tomorrow<br />starts today.</h3>
+            </div>
           </div>
+        </div>
+        <div class="hero-copy">
+          <div class="eyebrow"></div>
 
           <h1>
             Better care.<br />
@@ -64,44 +72,9 @@
           </p>
 
           <div class="hero-actions">
-            <a href="#book" class="button primary">
-              Book an appointment <span>↗</span>
-            </a>
-            <a href="#services" class="text-link">Explore services →</a>
+            <a href="#book" class="button primary"> Book an appointment </a>
+            <a href="#services" class="text-link">Explore services</a>
           </div>
-
-          <div class="hero-proof">
-            <div class="avatar-stack">
-              <span>👩🏻‍⚕️</span>
-              <span>👨🏻‍⚕️</span>
-              <span>👩🏽‍⚕️</span>
-            </div>
-            <div>
-              <strong>Care you can trust</strong>
-              <small>Professional, patient-first care</small>
-            </div>
-          </div>
-        </div>
-
-        <div class="hero-visual">
-          <div class="decor-circle"></div>
-
-          <div class="hero-photo">
-            <div class="photo-overlay">
-              <span>✦ HEALTHCARE WITH HEART</span>
-              <h3>A healthier tomorrow<br />starts today.</h3>
-            </div>
-          </div>
-
-          <div class="floating-card">
-            <div class="float-icon">✓</div>
-            <div>
-              <strong>Care made simple</strong>
-              <small>Appointments in one place</small>
-            </div>
-          </div>
-
-          <div class="hero-tag">✳ Here for your health</div>
         </div>
       </section>
 
@@ -141,38 +114,40 @@
 
         <div class="service-grid">
           <article class="service-card">
-            <div class="service-icon mint">♡</div>
+            <div class="service-icon mint"><i class="fas fa-heart"></i></div>
             <h3>General Checkup</h3>
             <p>
               Routine health assessments and preventive care to help you stay on
               track.
             </p>
-            <a href="#book">Book a visit <span>↗</span></a>
+            <a href="#book">Book a visit</a>
           </article>
 
           <article class="service-card">
-            <div class="service-icon peach">✚</div>
+            <div class="service-icon peach"><i class="fas fa-add"></i></div>
             <h3>Family Medicine</h3>
             <p>
               Thoughtful healthcare for individuals and families at every age.
             </p>
-            <a href="#book">Book a visit <span>↗</span></a>
+            <a href="#book">Book a visit</a>
           </article>
 
           <article class="service-card">
-            <div class="service-icon lavender">♡</div>
+            <div class="service-icon lavender">
+              <i class="fas fa-heart"></i>
+            </div>
             <h3>Heart Health</h3>
             <p>Consultations focused on cardiovascular health and wellbeing.</p>
-            <a href="#book">Book a visit <span>↗</span></a>
+            <a href="#book">Book a visit</a>
           </article>
 
           <article class="service-card">
-            <div class="service-icon yellow">☼</div>
+            <div class="service-icon yellow"><i class="fas fa-sun"></i></div>
             <h3>Wellness Care</h3>
             <p>
               Guidance on healthier habits, prevention and everyday wellness.
             </p>
-            <a href="#book">Book a visit <span>↗</span></a>
+            <a href="#book">Book a visit</a>
           </article>
         </div>
       </section>
@@ -198,40 +173,12 @@
 
       <!-- APPOINTMENT BOOKING SECTION -->
       <section class="booking-wrap" id="book">
-        <div class="booking-intro">
-          <div class="eyebrow">LET'S GET YOU STARTED</div>
-
-          <h2>Your health<br />comes <em>first.</em></h2>
-
-          <p>
-            Schedule your clinic visit in a few simple steps. Choose your doctor
-            and preferred appointment time.
-          </p>
-
-          <div class="booking-detail">
-            <span>✳</span>
-            <div>
-              <strong>Simple scheduling</strong>
-              <p>Request your appointment online.</p>
-            </div>
-          </div>
-
-          <div class="booking-detail">
-            <span>♡</span>
-            <div>
-              <strong>Personalised care</strong>
-              <p>Your clinic team will review your request.</p>
-            </div>
-          </div>
-        </div>
-
         <form class="booking-form" id="appointmentForm">
           <div class="form-head">
             <div>
               <span class="eyebrow">NEW APPOINTMENT</span>
               <h3>Book your visit</h3>
             </div>
-            <div class="form-symbol">✚</div>
           </div>
 
           <div class="form-grid">
@@ -282,7 +229,7 @@
                 type="number"
                 name="age"
                 min="0"
-                max="120"
+                max="160"
                 step="1"
                 placeholder="Enter age"
                 required
@@ -353,9 +300,7 @@
             </label>
           </div>
 
-          <button type="submit" class="submit-btn">
-            Request appointment <span>→</span>
-          </button>
+          <button type="submit" class="submit-btn">Request appointment</button>
 
           <p
             class="form-message"
@@ -385,15 +330,15 @@
 
           <div class="contact-items">
             <div class="contact-item">
-              <span>✉</span>
+              <span><i class="fas fa-envelope"></i></span>
               <div>
                 <small>EMAIL</small>
-                <strong>hello@medisync.example</strong>
+                <strong>medisyncClinic@gmail.com</strong>
               </div>
             </div>
 
             <div class="contact-item">
-              <span>⌖</span>
+              <span><i class="fas fa-location"></i></span>
               <div>
                 <small>LOCATION</small>
                 <strong>Ajmer, Rajasthan</strong>
@@ -401,7 +346,7 @@
             </div>
 
             <div class="contact-item">
-              <span>◷</span>
+              <span><i class="fas fa-clock"></i></span>
               <div>
                 <small>CLINIC HOURS</small>
                 <strong>Mon – Sat · 9 AM – 5 PM</strong>
@@ -417,7 +362,6 @@
               <span class="eyebrow">PATIENT SUPPORT</span>
               <h3>Send us a query</h3>
             </div>
-            <div class="form-symbol">✉</div>
           </div>
 
           <div class="query-grid">
@@ -479,9 +423,7 @@
             </label>
           </div>
 
-          <button type="submit" class="submit-btn">
-            Send query <span>→</span>
-          </button>
+          <button type="submit" class="submit-btn">Send query</button>
 
           <p
             class="form-message"
@@ -489,11 +431,6 @@
             role="status"
             aria-live="polite"
           ></p>
-
-          <p class="privacy-note">
-            Please do not include passwords or sensitive medical information.
-            For urgent medical problems, seek immediate medical assistance.
-          </p>
         </form>
       </section>
     </main>
@@ -501,7 +438,6 @@
     <!-- FOOTER -->
     <footer>
       <a class="brand" href="#home">
-        <span class="brand-icon">✚</span>
         <span>Medi<span>Sync</span></span>
       </a>
 

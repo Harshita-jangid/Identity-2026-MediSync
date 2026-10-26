@@ -6,7 +6,7 @@ const path = require("path");
 const nodemailer = require("nodemailer");
 
 const app = express();
-const PORT = Number(process.env.PORT || 5000);
+const PORT = Number(process.env.PORT || 3000);
 
 const MONGODB_URI =
   process.env.MONGODB_URI ||
@@ -17,6 +17,7 @@ const MONGODB_URI =
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static("public"));
 
 // ================= ONLINE APPOINTMENT MODEL =================
 
@@ -92,8 +93,6 @@ const ReceptionAppointment = mongoose.model(
 
 // ================= EXISTING DOCTORS COLLECTION =================
 
-// Clinic software ki existing doctors collection use hogi.
-// Ye model nayi collection create nahi karega.
 const doctorSchema = new mongoose.Schema(
   {},
   {
@@ -250,8 +249,6 @@ app.post("/api/appointments", async (req, res) => {
         message: "Please select today or a future appointment date.",
       });
     }
-
-    // Confirm karo ki selected doctor database mein hai.
     const doctorRecord = await Doctor.findOne({
       name: doctor.trim(),
       active: { $ne: false },

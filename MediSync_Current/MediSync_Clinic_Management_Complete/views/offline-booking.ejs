@@ -1,0 +1,505 @@
+<%- include('partials/header', { title: 'Offline Appointment Booking' }) %>
+<main class="offline-booking-page">
+  <div class="page-heading">
+    <div>
+      <p class="eyebrow">MEDISYNC · SELF-HEALING</p>
+      <h1>Offline Appointment Booking</h1>
+      <p class="muted">
+        Save appointments locally when offline and sync them when connected.
+      </p>
+    </div>
+      <a href="/admin/system-health"  class="button">← Back to self-healing</a>
+  </div>
+  <section class="card offline-status-card">
+    <div>
+      Network:
+      <span id="network" class="status">Checking…</span>
+    </div>
+    <div class="muted">
+      Pending appointments:
+      <strong id="pendingCount">0</strong>
+    </div>
+    <div id="notice" class="notice" role="status">
+      Appointment queue ready.
+    </div>
+  </section>
+  <form id="bookingForm" class="card">
+    <h2>Appointment details</h2>
+    <div class="form-grid">
+      <label>
+        Patient type
+        <select id="patientMode" required>
+          <option value="existing">Existing patient</option>
+          <option value="new">New patient</option>
+        </select>
+      </label>
+      <label id="existingWrap">
+        Select existing patient
+        <select id="patientId">
+          <option value="">Choose patient</option>
+          <% patients.forEach(p => { %>
+            <option value="<%= p._id %>">
+              <%= p.name %> · <%= p.phone %>
+            </option>
+          <% }) %>
+        </select>
+      </label>
+      <div id="newPatientFields" hidden>
+        <div class="form-grid">
+          <label>
+            Patient name
+            <input id="patientName" maxlength="100" autocomplete="name">
+          </label>
+          <label>
+            Age
+            <input id="patientAge" type="number" min="0" max="120">
+          </label>
+          <label>
+            Gender
+            <select id="patientGender">
+              <option value="">Choose gender</option>
+              <option>Female</option>
+              <option>Male</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label>
+            Phone
+            <input id="patientPhone" maxlength="20" autocomplete="tel">
+          </label>
+          <label>
+            Email (optional)
+            <input id="patientEmail" type="email" maxlength="150">
+          </label>
+          <label>
+            Address (optional)
+            <input id="patientAddress" maxlength="300">
+          </label>
+        </div>
+      </div>
+      <label>
+        Doctor
+        <select id="doctorId" required>
+          <option value="">Choose doctor</option>
+          <% doctors.forEach(d => { %>
+            <option value="<%= d._id %>">
+              <%= d.name %> · <%= d.specialization %>
+            </option>
+          <% }) %>
+        </select>
+      </label>
+      <label>
+        Appointment date
+        <input id="appointmentDate" type="date" required>
+      </label>
+      <label>
+        Appointment time
+        <input id="appointmentTime" type="time" required>
+      </label>
+      <label>
+        Reason for visit
+        <textarea id="reason" rows="3" maxlength="500" required></textarea>
+      </label>
+    </div>
+    <div class="actions">
+      <button class="primary" type="submit">Save appointment</button>
+      <button type="button" id="syncButton">
+        Sync pending appointments
+      </button>
+    </div>
+    <p class="muted">
+      Offline bookings are not confirmed until the server accepts them.
+      Do not rely on a local pending entry as a final appointment confirmation.
+    </p>
+  </form>
+  <section class="card">
+    <h2>Saved appointments</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Date / time</th>
+            <th>Status</th>
+            <th>Server token</th>
+          </tr>
+        </thead>
+        <tbody id="queueRows">
+          <tr>
+            <td colspan="5">Loading saved appointments…</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+<script>
+  const SERVER_PATIENTS = <%- JSON.stringify(
+    patients.map(p => ({
+      id: String(p._id),
+      name: p.name,
+      phone: p.phone
+    }))
+  ).replace(/</g, "\\u003c") %>;
+  const $ = id => document.getElementById(id);
+  const DB_NAME = "medisync-offline-bookings";
+  const STORE_NAME = "appointments";
+  const DB_VERSION = 1;
+
+  let db;
+
+  function notify(message, type = "") {
+    $("notice").textContent = message;
+    $("notice").className = "notice " + type;
+  }
+
+  function openDatabase() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+      request.onupgradeneeded = () => {
+        const database = request.result;
+
+        if (!database.objectStoreNames.contains(STORE_NAME)) {
+          database.createObjectStore(STORE_NAME, {
+            keyPath: "actionId"
+          });
+        }
+      };
+
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  function allActions() {
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, "readonly");
+      const request = tx.objectStore(STORE_NAME).getAll();
+
+      request.onsuccess = () => resolve(request.result || []);
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  function putAction(action) {
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, "readwrite");
+      tx.objectStore(STORE_NAME).put(action);
+
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+      tx.onabort = () => reject(tx.error);
+    });
+  }
+
+  function removeAction(actionId) {
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, "readwrite");
+      tx.objectStore(STORE_NAME).delete(actionId);
+
+      tx.oncomplete = resolve;
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+
+  function togglePatientFields() {
+    const isNew = $("patientMode").value === "new";
+
+    $("newPatientFields").hidden = !isNew;
+    $("existingWrap").hidden = isNew;
+
+    $("patientId").required = !isNew;
+    $("patientName").required = isNew;
+    $("patientAge").required = isNew;
+    $("patientGender").required = isNew;
+    $("patientPhone").required = isNew;
+  }
+
+  function updateNetwork() {
+  const networkElement = document.getElementById("network");
+
+  if (!networkElement) {
+    console.error("Network element #network not found.");
+    return;
+  }
+
+  const isOnline = navigator.onLine;
+
+  networkElement.textContent = isOnline ? "Online" : "Offline";
+  networkElement.className = isOnline
+    ? "status online"
+    : "status offline";
+
+  console.log("Network status updated:", networkElement.textContent);
+}
+
+  async function renderQueue() {
+    const actions = await allActions();
+    $("pendingCount").textContent = actions.length;
+
+    const tbody = $("queueRows");
+    tbody.replaceChildren();
+
+    if (!actions.length) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+
+      td.colSpan = 5;
+      td.textContent = "No locally saved appointments.";
+
+      tr.append(td);
+      tbody.append(tr);
+      return;
+    }
+
+  for(const action of actions){
+  const payload=action.payload||{};
+  const patientName=payload.patientMode==="new"
+    ?payload.newPatient?.name||"Unknown patient"
+    :SERVER_PATIENTS.find(p=>p.id===payload.patientId)?.name||"Existing patient";
+  const tr=document.createElement("tr");
+  for(const value of [
+    patientName,
+    `${payload.date||""} ${payload.time||""}`,
+    action.status||"Pending Sync",
+    action.tokenLabel||"Not assigned"
+  ]){
+    const td=document.createElement("td");
+    td.textContent=value;
+    tr.append(td);
+  }
+  tbody.append(tr);
+}
+  }
+  async function syncPending() {
+    if (!db || !navigator.onLine) return;
+
+    const actions = await allActions();
+    if (!actions.length) return;
+
+    const button = $("syncButton");
+    button.disabled = true;
+
+    try {
+      const response = await fetch(
+        "/api/admin/self-heal/offline-sync",
+        {
+          method: "POST",
+          cache: "no-store",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            actions: actions.map(action => ({
+              actionId: action.actionId,
+              type: action.type,
+              createdAt: action.createdAt,
+              payload: action.payload
+            }))
+          })
+        }
+      );
+
+      if (response.redirected) {
+        throw new Error(
+          "Admin login expired. Please login again."
+        );
+      }
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Sync failed.");
+      }
+
+      for (const result of data.results || []) {
+        if (result.status === "synced") {
+          await removeAction(result.actionId);
+        } else {
+          const action = actions.find(
+            item => item.actionId === result.actionId
+          );
+
+          if (action) {
+            action.status = "Needs review";
+            action.lastError = result.message || "Sync failed";
+            await putAction(action);
+          }
+        }
+      }
+
+      await renderQueue();
+
+      const failed = (data.results || []).filter(
+        result => result.status === "failed"
+      ).length;
+
+      notify(
+        failed
+          ? `${failed} appointment(s) need review. They remain saved locally.`
+          : "Pending appointments are synced. Check server for confirmation.",
+        failed ? "error" : "good"
+      );
+    } catch (error) {
+      notify(
+        error.message + " Local queue retained.",
+        "error"
+      );
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  $("syncButton").addEventListener("click", syncPending);
+
+  $("bookingForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const saveButton = $("bookingForm").querySelector(
+      'button[type="submit"]'
+    );
+
+    if (!db) {
+      notify(
+        "Offline storage is not ready. Please refresh the page.",
+        "error"
+      );
+      return;
+    }
+
+    saveButton.disabled = true;
+
+    try {
+      const patientMode = $("patientMode").value;
+
+      const payload = {
+        patientMode: patientMode,
+
+        patientId: patientMode === "existing"
+          ? $("patientId").value
+          : "",
+
+        newPatient: patientMode === "new"
+          ? {
+              name: $("patientName").value.trim(),
+              age: Number($("patientAge").value),
+              gender: $("patientGender").value,
+              phone: $("patientPhone").value.trim(),
+              email: $("patientEmail").value.trim(),
+              address: $("patientAddress").value.trim()
+            }
+          : null,
+
+        doctorId: $("doctorId").value,
+        date: $("appointmentDate").value,
+        time: $("appointmentTime").value,
+        reason: $("reason").value.trim()
+      };
+
+      if (
+        !payload.doctorId ||
+        !payload.date ||
+        !payload.time ||
+        !payload.reason
+      ) {
+        notify(
+          "Please fill in all required appointment details.",
+          "error"
+        );
+        return;
+      }
+
+      if (patientMode === "existing" && !payload.patientId) {
+        notify("Please select an existing patient.", "error");
+        return;
+      }
+
+      if (
+        patientMode === "new" &&
+        (
+          !payload.newPatient.name ||
+          $("patientAge").value === "" ||
+          !payload.newPatient.gender ||
+          !payload.newPatient.phone
+        )
+      ) {
+        notify(
+          "Please complete the required new patient details.",
+          "error"
+        );
+        return;
+      }
+
+      const action = {
+        actionId: crypto.randomUUID(),
+        type: "create-appointment",
+        createdAt: new Date().toISOString(),
+        status: "Pending Sync",
+        tokenLabel: "Not assigned",
+        payload: payload
+      };
+
+      await putAction(action);
+      await renderQueue();
+
+      $("bookingForm").reset();
+      togglePatientFields();
+
+      if (navigator.onLine) {
+        notify(
+          "Appointment saved locally. Syncing with the server...",
+          ""
+        );
+        await syncPending();
+      } else {
+        notify(
+          "Appointment saved on this device. It will sync when you are online.",
+          "good"
+        );
+      }
+    } catch (error) {
+      console.error("Appointment save error:", error);
+
+      notify(
+        "Could not save appointment: " + error.message,
+        "error"
+      );
+    } finally {
+      saveButton.disabled = false;
+    }
+  });
+  window.addEventListener("online", () => {
+      updateNetwork();
+      syncPending();
+    });
+
+    window.addEventListener("offline", updateNetwork);
+  $("patientMode").addEventListener(
+    "change",
+    togglePatientFields
+  );
+
+  (async function init() {
+    try {
+      if (!("indexedDB" in window)) {
+        throw new Error(
+          "IndexedDB is not supported in this browser."
+        );
+      }
+
+      db = await openDatabase();
+
+      togglePatientFields();
+      await renderQueue();
+      updateNetwork();
+    } catch (error) {
+      notify(
+        "Offline storage is unavailable: " + error.message,
+        "error"
+      );
+    }
+  })();
+</script>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,120 @@
+[{
+  "_id": {
+    "$oid": "6adee5c1bf58d2bbefe247d7"
+  },
+  "name": "Rahul Sharma",
+  "age": 25,
+  "gender": "Male",
+  "phone": "9876501234",
+  "email": "rahul.sharma@example.com",
+  "address": "Vaishali Nagar, Jaipur",
+  "medicalNotes": "Fever and mild headache"
+},
+{
+  "_id": {
+    "$oid": "6adee5c1bf58d2bbefe247d8"
+  },
+  "name": "Priya Verma",
+  "age": 32,
+  "gender": "Female",
+  "phone": "9876501235",
+  "email": "priya.verma@example.com",
+  "address": "Mansarovar, Jaipur",
+  "medicalNotes": "Routine health checkup"
+},
+{
+  "_id": {
+    "$oid": "6adee5c1bf58d2bbefe247d9"
+  },
+  "name": "Amit Singh",
+  "age": 40,
+  "gender": "Male",
+  "phone": "9876501236",
+  "email": "amit.singh@example.com",
+  "address": "Ajmer Road, Jaipur",
+  "medicalNotes": "Seasonal cough"
+},
+{
+  "_id": {
+    "$oid": "6adee5c1bf58d2bbefe247da"
+  },
+  "name": "Neha Gupta",
+  "age": 28,
+  "gender": "Female",
+  "phone": "9876501237",
+  "email": "neha.gupta@example.com",
+  "address": "Malviya Nagar, Jaipur",
+  "medicalNotes": "General weakness"
+},
+{
+  "_id": {
+    "$oid": "6adee5c1bf58d2bbefe247db"
+  },
+  "name": "Vikas Meena",
+  "age": 35,
+  "gender": "Male",
+  "phone": "9876501238",
+  "email": "vikas.meena@example.com",
+  "address": "Jagatpura, Jaipur",
+  "medicalNotes": "Stomach pain"
+},
+{
+  "_id": {
+    "$oid": "6adee5c1bf58d2bbefe247dc"
+  },
+  "name": "Pooja Joshi",
+  "age": 22,
+  "gender": "Female",
+  "phone": "9876501239",
+  "email": "pooja.joshi@example.com",
+  "address": "Sanganer, Jaipur",
+  "medicalNotes": "Routine consultation"
+},
+{
+  "_id": {
+    "$oid": "6adee5c1bf58d2bbefe247dd"
+  },
+  "name": "Rohit Yadav",
+  "age": 45,
+  "gender": "Male",
+  "phone": "9876501240",
+  "email": "rohit.yadav@example.com",
+  "address": "Jhotwara, Jaipur",
+  "medicalNotes": "Knee pain"
+},
+{
+  "_id": {
+    "$oid": "6adee5c1bf58d2bbefe247de"
+  },
+  "name": "Anjali Jain",
+  "age": 30,
+  "gender": "Female",
+  "phone": "9876501241",
+  "email": "anjali.jain@example.com",
+  "address": "Civil Lines, Jaipur",
+  "medicalNotes": "Headache"
+},
+{
+  "_id": {
+    "$oid": "6adee5c1bf58d2bbefe247df"
+  },
+  "name": "Deepak Kumawat",
+  "age": 50,
+  "gender": "Male",
+  "phone": "9876501242",
+  "email": "deepak.kumawat@example.com",
+  "address": "Bani Park, Jaipur",
+  "medicalNotes": "Blood pressure follow-up"
+},
+{
+  "_id": {
+    "$oid": "6adee5c1bf58d2bbefe247e0"
+  },
+  "name": "Kavita Sharma",
+  "age": 38,
+  "gender": "Female",
+  "phone": "9876501243",
+  "email": "kavita.sharma@example.com",
+  "address": "Pratap Nagar, Jaipur",
+  "medicalNotes": "Seasonal allergy"
+}]

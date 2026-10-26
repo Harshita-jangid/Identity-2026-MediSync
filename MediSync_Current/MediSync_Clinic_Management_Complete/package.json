@@ -1,5 +1,3 @@
-
-
 {
   "name": "medisync-clinic-management",
   "version": "2.0.0",
@@ -11,7 +9,8 @@
     "pm2:status": "pm2 status",
     "pm2:logs": "pm2 logs medisync",
     "pm2:restart": "pm2 restart medisync",
-    "pm2:stop": "pm2 stop medisync"
+    "pm2:stop": "pm2 stop medisync",
+    "watchdog": "node watchdog.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

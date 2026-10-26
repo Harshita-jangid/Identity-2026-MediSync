@@ -1,3 +1,7 @@
+/* ========================================
+   1. ROOT VARIABLES & RESET
+======================================== */
+
 :root {
   --ink: #233c35;
   --muted: #718078;
@@ -25,7 +29,7 @@ html {
 body {
   font-family: "DM Sans", sans-serif;
   color: var(--ink);
-  background: #fff;
+  background: var(--white);
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
 }
@@ -59,6 +63,16 @@ textarea:focus-visible {
   outline-offset: 3px;
 }
 
+h1,
+h2,
+h3 {
+  font-family: "Manrope", sans-serif;
+}
+
+/* ========================================
+   2. NAVBAR
+======================================== */
+
 .topbar {
   min-height: 82px;
   padding: 0 7%;
@@ -70,35 +84,14 @@ textarea:focus-visible {
   border-bottom: 1px solid #edf0eb;
   position: sticky;
   top: 0;
+  font-weight: 900;
+  font-size: x-large;
   z-index: 100;
   backdrop-filter: blur(14px);
 }
 
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font:
-    800 25px "Manrope",
-    sans-serif;
-  letter-spacing: -1.1px;
-  white-space: nowrap;
-}
-
-.brand > span:last-child > span {
+.brand > span > span {
   color: var(--green);
-}
-
-.brand-icon {
-  width: 38px;
-  height: 38px;
-  border-radius: 13px;
-  display: grid;
-  place-items: center;
-  background: var(--green);
-  color: white;
-  font-size: 22px;
-  box-shadow: 0 6px 15px #2e66572b;
 }
 
 nav {
@@ -111,7 +104,7 @@ nav > a {
   font-size: 13px;
   font-weight: 600;
   color: #68766e;
-  transition: color 0.2s;
+  transition: color 0.2s ease;
 }
 
 nav > a:hover {
@@ -120,34 +113,38 @@ nav > a:hover {
 
 nav .nav-cta {
   background: var(--green);
-  color: white;
+  color: var(--white);
   padding: 12px 18px;
   border-radius: 8px;
   transition:
-    background 0.2s,
-    transform 0.2s;
+    background 0.2s ease,
+    transform 0.2s ease;
 }
 
 nav .nav-cta:hover {
-  color: white;
   background: var(--green-dark);
+  color: var(--white);
   transform: translateY(-1px);
 }
 
 .menu {
   display: none;
-  background: var(--green-light);
-  color: var(--green);
+  padding: 8px 12px;
   border: 0;
   border-radius: 8px;
-  padding: 8px 12px;
+  background: var(--green-light);
+  color: var(--green);
   font-size: 22px;
   cursor: pointer;
 }
 
+/* ========================================
+   3. HERO SECTION
+======================================== */
+
 .hero {
   min-height: 610px;
-  padding: 76px 9% 86px;
+  padding: 40px 4% 76px;
   display: grid;
   grid-template-columns: 1fr 0.9fr;
   align-items: center;
@@ -165,28 +162,14 @@ nav .nav-cta:hover {
 }
 
 .eyebrow {
-  color: var(--green);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 2px;
   display: flex;
   align-items: center;
   gap: 9px;
   margin-bottom: 20px;
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-  background: #69a47c;
-  border-radius: 50%;
-  box-shadow: 0 0 0 4px #69a47c20;
-}
-
-h1,
-h2,
-h3 {
-  font-family: "Manrope", sans-serif;
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
 }
 
 .hero h1 {
@@ -198,18 +181,17 @@ h3 {
 
 .hero h1 em,
 .section-heading h2 em,
-.booking-intro h2 em,
 .contact h2 em {
   color: var(--green);
   font-style: normal;
 }
 
 .hero-description {
-  color: var(--muted);
   max-width: 440px;
+  margin-top: 24px;
+  color: var(--muted);
   font-size: 15px;
   line-height: 1.9;
-  margin-top: 24px;
 }
 
 .hero-actions {
@@ -221,20 +203,20 @@ h3 {
 }
 
 .button {
-  border: 0;
   display: inline-flex;
   justify-content: center;
   align-items: center;
   gap: 16px;
-  border-radius: 8px;
   padding: 13px 20px;
-  font-weight: 700;
+  border: 0;
+  border-radius: 8px;
   font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
   transition:
-    transform 0.2s,
-    box-shadow 0.2s,
-    background 0.2s;
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
 .button:hover {
@@ -243,7 +225,7 @@ h3 {
 
 .button.primary {
   background: var(--green);
-  color: white;
+  color: var(--white);
   box-shadow: 0 8px 18px #2e665726;
 }
 
@@ -262,46 +244,10 @@ h3 {
   color: var(--green);
 }
 
-.hero-proof {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  margin-top: 45px;
-}
-
-.avatar-stack {
-  display: flex;
-  padding-left: 5px;
-}
-
-.avatar-stack span {
-  width: 35px;
-  height: 35px;
-  display: grid;
-  place-items: center;
-  background: #e2eee2;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  margin-left: -5px;
-  font-size: 18px;
-}
-
-.hero-proof strong,
-.hero-proof small {
-  display: block;
-}
-
-.hero-proof strong {
-  font-size: 12px;
-}
-
-.hero-proof small {
-  color: var(--muted);
-  font-size: 11px;
-}
+/* Hero Image */
 
 .hero-visual {
-  min-height: 440px;
+  min-height: 600px;
   position: relative;
   display: flex;
   align-items: center;
@@ -309,17 +255,15 @@ h3 {
 }
 
 .hero-photo {
-  width: min(100%, 420px);
-  height: 440px;
+  width: min(100%, 500px);
+  height: 550px;
   position: relative;
   z-index: 1;
-  border-radius: 48% 48% 20px 20px;
+  border-radius: 40% 40% 20px 20px;
   background:
     linear-gradient(0deg, rgba(20, 50, 39, 0.72), transparent 65%),
-    url("https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=1000&q=85")
-      center 30% / cover no-repeat,
+    url("/picture.jpg") center 30% / cover no-repeat,
     #d9e8dd;
-
   box-shadow: 0 25px 60px #243f3020;
 }
 
@@ -327,7 +271,7 @@ h3 {
   position: absolute;
   left: 28px;
   bottom: 28px;
-  color: white;
+  color: var(--white);
 }
 
 .photo-overlay span {
@@ -337,96 +281,26 @@ h3 {
 }
 
 .photo-overlay h3 {
+  margin-top: 8px;
   font-size: 25px;
   line-height: 1.3;
-  margin-top: 8px;
 }
 
-.decor-circle {
-  position: absolute;
-  width: 370px;
-  height: 370px;
-  border: 1px solid #b9d2bf;
-  border-radius: 50%;
-  top: 25px;
-  right: -20px;
-}
-
-.decor-circle::before {
-  content: "";
-  position: absolute;
-  inset: 18px;
-  border: 1px dashed #c9ddcb;
-  border-radius: 50%;
-}
-
-.floating-card {
-  position: absolute;
-  z-index: 3;
-  left: -35px;
-  bottom: 75px;
-  background: white;
-  padding: 16px 20px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  box-shadow: var(--shadow);
-}
-
-.float-icon {
-  width: 39px;
-  height: 39px;
-  border-radius: 10px;
-  background: var(--green-light);
-  color: var(--green);
-  display: grid;
-  place-items: center;
-  font-size: 22px;
-  font-weight: 800;
-}
-
-.floating-card strong,
-.floating-card small {
-  display: block;
-}
-
-.floating-card strong {
-  font-size: 12px;
-}
-
-.floating-card small {
-  color: var(--muted);
-  font-size: 10px;
-  margin-top: 3px;
-}
-
-.hero-tag {
-  position: absolute;
-  z-index: 3;
-  right: -12px;
-  top: 70px;
-  padding: 11px 15px;
-  border-radius: 7px;
-  background: white;
-  color: var(--green);
-  font-size: 10px;
-  font-weight: 800;
-  box-shadow: var(--shadow);
-}
+/* ========================================
+   4. STATS SECTION
+======================================== */
 
 .stats {
-  padding: 30px 9%;
+  padding: 50px 9%;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 24px;
-  background: white;
-  border-bottom: 1px solid var(--line);
+  background: #397354;
 }
 
 .stats > div {
   padding: 8px 18px;
-  border-right: 1px solid var(--line);
+  border-right: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .stats > div:last-child {
@@ -439,16 +313,21 @@ h3 {
 }
 
 .stats strong {
+  color: var(--white);
   font:
     700 17px "Manrope",
     sans-serif;
 }
 
 .stats span {
-  font-size: 12px;
-  color: var(--muted);
   margin-top: 3px;
+  color: #f0f6f0;
+  font-size: 12px;
 }
+
+/* ========================================
+   5. GENERAL SECTION STYLES
+======================================== */
 
 .section {
   padding: 100px 9%;
@@ -467,7 +346,6 @@ h3 {
 }
 
 .section-heading h2,
-.booking-intro h2,
 .contact h2 {
   font-size: clamp(32px, 3.6vw, 48px);
   letter-spacing: -1.8px;
@@ -481,13 +359,17 @@ h3 {
   line-height: 1.9;
 }
 
+/* ========================================
+   6. SERVICES SECTION
+======================================== */
+
 .services {
-  background: #fff;
+  background: var(--white);
 }
 
 .service-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
 }
 
@@ -495,11 +377,11 @@ h3 {
   padding: 27px 22px;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: white;
+  background: var(--white);
   transition:
-    transform 0.25s,
-    box-shadow 0.25s,
-    border-color 0.25s;
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .service-card:hover {
@@ -513,31 +395,34 @@ h3 {
   height: 51px;
   display: grid;
   place-items: center;
-  border-radius: 13px;
-  font-size: 26px;
   margin-bottom: 23px;
+  border-radius: 13px;
+  font-size: 23px;
 }
 
 .service-icon.mint {
   background: #e5f2e6;
   color: #397354;
 }
+
 .service-icon.peach {
   background: #fbe9de;
   color: #b66c48;
 }
+
 .service-icon.lavender {
   background: #eeebfa;
   color: #7765b5;
 }
+
 .service-icon.yellow {
   background: #fbf2d9;
   color: #9a7b2e;
 }
 
 .service-card h3 {
-  font-size: 16px;
   margin-bottom: 9px;
+  font-size: 16px;
 }
 
 .service-card p {
@@ -556,24 +441,32 @@ h3 {
   font-weight: 800;
 }
 
+.service-card > a:hover {
+  color: var(--green-dark);
+}
+
+/* ========================================
+   7. DOCTORS SECTION
+======================================== */
+
 .doctors {
   background: var(--cream);
 }
 
 .doctor-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 22px;
 }
 
 .doctor-card {
   overflow: hidden;
-  background: white;
-  border: 1px solid #e9ece5;
+  border: 1px solid var(--line);
   border-radius: 13px;
+  background: #80ad8c;
   transition:
-    transform 0.25s,
-    box-shadow 0.25s;
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .doctor-card:hover {
@@ -581,125 +474,59 @@ h3 {
   box-shadow: var(--shadow);
 }
 
-.doctor-art {
-  height: 235px;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-}
-
-.doctor-art span {
-  font-size: 105px;
-  filter: drop-shadow(0 10px 10px #243f3014);
-  transition: transform 0.3s;
-}
-
-.doctor-card:hover .doctor-art span {
-  transform: scale(1.07);
-}
-
-.doctor-one {
-  background: linear-gradient(135deg, #e2f0e3, #cbded0);
-}
-.doctor-two {
-  background: linear-gradient(135deg, #f5e8db, #e8d3c1);
-}
-.doctor-three {
-  background: linear-gradient(135deg, #e9e6f5, #d6d2eb);
-}
-
 .doctor-info {
   padding: 23px;
 }
 
 .doctor-badge {
-  font-size: 9px;
-  letter-spacing: 1.1px;
-  color: var(--green);
-  background: var(--green-light);
-  border-radius: 5px;
+  display: inline-block;
   padding: 6px 8px;
+  border-radius: 5px;
+  background: var(--green-light);
+  color: var(--green);
+  font-size: 9px;
   font-weight: 800;
+  letter-spacing: 1.1px;
 }
 
 .doctor-info h3 {
-  font-size: 17px;
   margin-top: 16px;
+  font-size: 17px;
 }
 
 .doctor-info p {
-  color: var(--muted);
-  font-size: 12px;
   margin-top: 3px;
+  color: #233c35;
+  font-size: 14px;
 }
 
 .doctor-info a {
   display: inline-block;
-  color: var(--green);
+  margin-top: 16px;
+  color: #233c35;
   font-size: 12px;
   font-weight: 800;
-  margin-top: 16px;
 }
 
-.demo-note {
-  color: var(--muted);
-  font-size: 11px;
-  margin-top: 20px;
-}
+/* ========================================
+   8. APPOINTMENT BOOKING SECTION
+======================================== */
 
 .booking-wrap {
   padding: 95px 9%;
   display: grid;
-  grid-template-columns: 0.8fr 1.2fr;
-  gap: 70px;
+  gap: 40px;
   align-items: start;
   background: #edf4ec;
 }
 
-.booking-intro {
-  padding-top: 25px;
-}
-
-.booking-intro > p {
-  max-width: 370px;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.9;
-  margin-top: 22px;
-}
-
-.booking-detail {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-top: 28px;
-}
-
-.booking-detail > span {
-  width: 43px;
-  height: 43px;
-  flex-shrink: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 11px;
-  background: white;
-  color: var(--green);
-  font-size: 22px;
-}
-
-.booking-detail strong {
-  font-size: 13px;
-}
-
-.booking-detail p {
-  color: var(--muted);
-  font-size: 11px;
-}
-
 .booking-form {
+  width: 100%;
+  max-width: 950px;
+  margin: 0 auto;
   padding: 34px;
   border-radius: 15px;
-  background: white;
+  background: var(--white);
   box-shadow: 0 20px 55px #244f4410;
 }
 
@@ -719,20 +546,9 @@ h3 {
   letter-spacing: -0.8px;
 }
 
-.form-symbol {
-  width: 48px;
-  height: 48px;
-  border-radius: 13px;
-  background: var(--green-light);
-  color: var(--green);
-  display: grid;
-  place-items: center;
-  font-size: 26px;
-}
-
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 19px 16px;
 }
 
@@ -750,16 +566,16 @@ h3 {
 .form-grid textarea {
   width: 100%;
   min-width: 0;
+  padding: 12px 13px;
   border: 1px solid #e1e7df;
   border-radius: 7px;
-  padding: 12px 13px;
+  outline: none;
   background: #fcfdfb;
   color: var(--ink);
   font-size: 12px;
-  outline: none;
   transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .form-grid input:focus,
@@ -783,22 +599,22 @@ h3 {
 }
 
 .submit-btn {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
   margin-top: 23px;
   padding: 15px 18px;
   border: 0;
   border-radius: 8px;
   background: var(--green);
-  color: white;
-  font-weight: 700;
+  color: var(--white);
   font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
   transition:
-    background 0.2s,
-    transform 0.2s;
+    background 0.2s ease,
+    transform 0.2s ease;
 }
 
 .submit-btn:hover {
@@ -806,13 +622,24 @@ h3 {
   transform: translateY(-1px);
 }
 
-.submit-btn span {
-  font-size: 20px;
+.submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .form-message {
-  font-size: 12px;
   margin-top: 12px;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.form-message.success {
+  color: #247348;
+}
+
+.form-message.error {
+  color: #b42318;
 }
 
 .privacy-note {
@@ -822,134 +649,36 @@ h3 {
   line-height: 1.7;
 }
 
-.appointments {
-  background: white;
-}
-
-.secondary {
-  color: var(--green);
-  background: var(--green-light);
-}
-
-.secondary:hover {
-  background: #d8eadb;
-}
-
-.appointment-panel {
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.appointment-panel-head {
-  padding: 22px 25px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  border-bottom: 1px solid var(--line);
-}
-
-.appointment-panel-head strong {
-  font-size: 14px;
-}
-
-.appointment-panel-head p {
-  color: var(--muted);
-  font-size: 11px;
-  margin-top: 3px;
-}
-
-.live-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  color: var(--green);
-  white-space: nowrap;
-}
-
-.live-label span {
-  width: 7px;
-  height: 7px;
-  background: #62a678;
-  border-radius: 50%;
-}
-
-.appointment-list {
-  padding: 24px;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 28px 10px;
-}
-
-.empty-state > span {
-  width: 55px;
-  height: 55px;
-  display: grid;
-  place-items: center;
-  margin: 0 auto 14px;
-  border-radius: 50%;
-  background: var(--green-light);
-  color: var(--green);
-  font-size: 26px;
-}
-
-.empty-state h3 {
-  font-size: 17px;
-}
-
-.empty-state p {
-  margin: 7px 0 20px;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-/* These styles also support appointment items created by app.js */
-.appointment-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding: 18px;
-  margin-bottom: 12px;
-  border: 1px solid var(--line);
-  border-radius: 9px;
-}
-
-.appointment-item:last-child {
-  margin-bottom: 0;
-}
-
-.appointment-item h3 {
-  font-size: 14px;
-}
-
-.appointment-item p {
-  color: var(--muted);
-  font-size: 12px;
-}
+/* ========================================
+   9. CONTACT SECTION
+======================================== */
 
 .contact {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 40px;
-  background: var(--cream);
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  align-items: start;
+  gap: 48px;
+  background: #80ad8c;
+}
+
+.contact-info {
+  padding-top: 15px;
 }
 
 .contact .eyebrow {
   margin-bottom: 14px;
 }
 
+.contact-description {
+  max-width: 440px;
+  margin: 18px 0 30px;
+  color: #233c35;
+  line-height: 1.8;
+}
+
 .contact-items {
   display: grid;
-  gap: 20px;
+  gap: 22px;
 }
 
 .contact-item {
@@ -961,12 +690,13 @@ h3 {
 .contact-item > span {
   width: 43px;
   height: 43px;
+  flex-shrink: 0;
   display: grid;
   place-items: center;
   border-radius: 10px;
-  background: white;
+  background: var(--white);
   color: var(--green);
-  font-size: 21px;
+  font-size: 19px;
 }
 
 .contact-item small,
@@ -975,16 +705,100 @@ h3 {
 }
 
 .contact-item small {
-  font-size: 9px;
-  letter-spacing: 1.2px;
-  font-weight: 800;
   color: var(--green);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
 }
 
 .contact-item strong {
   font-size: 12px;
   overflow-wrap: anywhere;
 }
+
+/* Contact Query Form */
+
+.query-form {
+  padding: 30px;
+  border: 1px solid #e5eae5;
+  border-radius: 22px;
+  background: var(--white);
+  box-shadow: 0 14px 40px rgba(35, 60, 53, 0.07);
+}
+
+.query-form .form-head {
+  margin-bottom: 25px;
+}
+
+.query-form .form-head h3 {
+  margin-top: 8px;
+  font-size: 1.5rem;
+}
+
+.query-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.query-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.query-grid input,
+.query-grid select,
+.query-grid textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 13px 14px;
+  border: 1px solid #dce4dd;
+  border-radius: 10px;
+  outline: none;
+  background: #fbfcfa;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 400;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.query-grid input:focus,
+.query-grid select:focus,
+.query-grid textarea:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(46, 102, 87, 0.1);
+}
+
+.query-grid textarea {
+  min-height: 125px;
+  resize: vertical;
+}
+
+.query-full {
+  grid-column: 1 / -1;
+}
+
+.query-form .submit-btn {
+  margin-top: 22px;
+}
+
+#queryMessage.success {
+  color: #247348;
+}
+
+#queryMessage.error {
+  color: #b42318;
+}
+
+/* ========================================
+   10. FOOTER
+======================================== */
 
 footer {
   padding: 27px 9%;
@@ -993,16 +807,11 @@ footer {
   align-items: center;
   flex-wrap: wrap;
   gap: 20px;
+  background: var(--white);
 }
 
 footer .brand {
   font-size: 21px;
-}
-
-footer .brand-icon {
-  width: 32px;
-  height: 32px;
-  font-size: 18px;
 }
 
 footer p,
@@ -1011,7 +820,10 @@ footer > span {
   font-size: 11px;
 }
 
-/* Tablet */
+/* ========================================
+   11. TABLET RESPONSIVE
+======================================== */
+
 @media (max-width: 1050px) {
   .topbar {
     padding: 0 5%;
@@ -1022,31 +834,31 @@ footer > span {
   }
 
   .hero {
-    padding-left: 6%;
     padding-right: 6%;
+    padding-left: 6%;
     gap: 35px;
   }
 
   .section,
   .booking-wrap {
-    padding-left: 6%;
     padding-right: 6%;
+    padding-left: 6%;
   }
 
   .service-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .booking-wrap {
-    gap: 35px;
-  }
-
-  .floating-card {
-    left: -12px;
+  .stats {
+    padding-right: 6%;
+    padding-left: 6%;
   }
 }
 
-/* Mobile navigation and layout */
+/* ========================================
+   12. MOBILE RESPONSIVE
+======================================== */
+
 @media (max-width: 760px) {
   .topbar {
     min-height: 72px;
@@ -1064,16 +876,16 @@ footer > span {
   nav {
     display: none;
     position: absolute;
+    top: 71px;
     left: 0;
     right: 0;
-    top: 71px;
     padding: 22px 5% 26px;
-    background: white;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+    background: var(--white);
     border-bottom: 1px solid var(--line);
     box-shadow: 0 18px 25px #233c3510;
-    align-items: stretch;
-    flex-direction: column;
-    gap: 18px;
   }
 
   nav.open {
@@ -1087,6 +899,8 @@ footer > span {
   nav .nav-cta {
     text-align: center;
   }
+
+  /* Hero */
 
   .hero {
     grid-template-columns: 1fr;
@@ -1108,30 +922,24 @@ footer > span {
   }
 
   .hero-photo {
-    height: 375px;
-    max-width: 380px;
+    height: 380px;
+    max-width: 550px;
   }
 
-  .decor-circle {
-    width: 310px;
-    height: 310px;
-    right: 0;
+  .photo-overlay h3 {
+    font-size: 22px;
   }
 
-  .hero-tag {
-    right: 0;
-    top: 30px;
+  .hero-actions {
+    gap: 18px;
   }
 
-  .floating-card {
-    left: 0;
-    bottom: 35px;
-  }
+  /* Stats */
 
   .stats {
-    padding: 25px 6%;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px 10px;
+    padding: 25px 6%;
   }
 
   .stats > div {
@@ -1143,22 +951,25 @@ footer > span {
     font-size: 15px;
   }
 
+  /* Sections */
+
   .section {
     padding: 68px 6%;
   }
 
   .section-heading {
-    align-items: start;
     flex-direction: column;
+    align-items: start;
     gap: 15px;
     margin-bottom: 30px;
   }
 
   .section-heading h2,
-  .booking-intro h2,
   .contact h2 {
     font-size: 38px;
   }
+
+  /* Services */
 
   .service-grid {
     gap: 13px;
@@ -1172,38 +983,48 @@ footer > span {
     min-height: auto;
   }
 
+  /* Doctors */
+
   .doctor-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px;
   }
 
-  .doctor-art {
-    height: 230px;
+  .doctor-card img {
+    height: 210px;
   }
+
+  .doctor-info {
+    padding: 18px;
+  }
+
+  /* Booking */
 
   .booking-wrap {
     padding: 65px 6%;
-    grid-template-columns: 1fr;
     gap: 35px;
-  }
-
-  .booking-intro {
-    padding-top: 0;
   }
 
   .booking-form {
     padding: 25px 20px;
   }
 
+  /* Contact */
+
   .contact {
-    flex-direction: column;
-    align-items: start;
+    grid-template-columns: 1fr;
     gap: 30px;
   }
 
-  .contact-items {
-    width: 100%;
+  .contact-description {
+    max-width: 600px;
   }
+
+  .query-form {
+    padding: 25px;
+  }
+
+  /* Footer */
 
   footer {
     padding: 25px 6%;
@@ -1213,8 +1034,11 @@ footer > span {
   }
 }
 
-/* Small phones */
-@media (max-width: 420px) {
+/* ========================================
+   13. SMALL MOBILE SCREENS
+======================================== */
+
+@media (max-width: 520px) {
   .hero-actions {
     align-items: stretch;
     flex-direction: column;
@@ -1233,18 +1057,25 @@ footer > span {
     height: 325px;
   }
 
+  .photo-overlay {
+    left: 20px;
+    bottom: 20px;
+  }
+
   .photo-overlay h3 {
     font-size: 21px;
   }
 
-  .floating-card {
-    padding: 12px;
-    left: -5px;
+  .stats {
+    gap: 12px 6px;
   }
 
-  .hero-tag {
-    font-size: 9px;
-    padding: 9px;
+  .stats strong {
+    font-size: 13px;
+  }
+
+  .stats span {
+    font-size: 11px;
   }
 
   .service-grid {
@@ -1255,6 +1086,10 @@ footer > span {
     min-height: auto;
   }
 
+  .doctor-grid {
+    grid-template-columns: 1fr;
+  }
+
   .form-grid {
     grid-template-columns: 1fr;
   }
@@ -1263,154 +1098,10 @@ footer > span {
     grid-column: auto;
   }
 
-  .appointment-panel-head {
-    align-items: start;
-    flex-direction: column;
-    padding: 18px;
+  .booking-form {
+    padding: 22px 17px;
   }
 
-  .appointment-list {
-    padding: 15px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-.contact {
-  display: grid;
-  grid-template-columns: 0.85fr 1.15fr;
-  align-items: start;
-  gap: 48px;
-}
-
-.contact-info {
-  padding-top: 15px;
-}
-
-.contact-description {
-  color: var(--muted);
-  line-height: 1.8;
-  margin: 18px 0 30px;
-  max-width: 440px;
-}
-
-.contact-items {
-  display: grid;
-  gap: 22px;
-}
-
-.query-form {
-  background: #fff;
-  border: 1px solid #e5eae5;
-  border-radius: 22px;
-  padding: 30px;
-  box-shadow: 0 14px 40px rgba(35, 60, 53, 0.07);
-}
-
-.query-form .form-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-}
-
-.query-form .form-head h3 {
-  margin: 8px 0 0;
-  font-size: 1.5rem;
-}
-
-.query-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-}
-
-.query-grid label {
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--ink);
-}
-
-.query-grid input,
-.query-grid select,
-.query-grid textarea {
-  width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-  border: 1px solid #dce4dd;
-  border-radius: 10px;
-  background: #fbfcfa;
-  padding: 13px 14px;
-  font: inherit;
-  font-weight: 400;
-  color: var(--ink);
-  outline: none;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
-}
-
-.query-grid input:focus,
-.query-grid select:focus,
-.query-grid textarea:focus {
-  border-color: var(--green);
-  box-shadow: 0 0 0 3px rgba(46, 102, 87, 0.1);
-}
-
-.query-grid textarea {
-  resize: vertical;
-  min-height: 125px;
-}
-
-.query-full {
-  grid-column: 1 / -1;
-}
-
-.query-form .submit-btn {
-  width: 100%;
-  margin-top: 22px;
-}
-
-.query-form .submit-btn:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-}
-
-#queryMessage {
-  overflow-wrap: anywhere;
-}
-
-#queryMessage.success {
-  color: #247348;
-}
-
-#queryMessage.error {
-  color: #b42318;
-}
-
-@media (max-width: 850px) {
-  .contact {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-
-  .contact-description {
-    max-width: 600px;
-  }
-}
-
-@media (max-width: 520px) {
   .query-form {
     padding: 20px;
     border-radius: 16px;
@@ -1423,5 +1114,19 @@ footer > span {
 
   .query-full {
     grid-column: auto;
+  }
+}
+
+/* ========================================
+   14. REDUCED MOTION ACCESSIBILITY
+======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }
