@@ -33,12 +33,6 @@ const appointmentSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    email: {
-      type: String,
-      trim: true,
-      lowercase: true,
-      default: "",
-    },
     department: {
       type: String,
       required: true,
@@ -219,7 +213,6 @@ app.post("/api/appointments", async (req, res) => {
     const {
       patientName,
       phone,
-      email,
       department,
       doctor,
       appointmentDate,
@@ -282,9 +275,6 @@ app.post("/api/appointments", async (req, res) => {
     const appointment = await OnlineAppointment.create({
       patientName: patientName.trim(),
       phone: phone.trim(),
-      email: String(email || "")
-        .trim()
-        .toLowerCase(),
       department: department.trim(),
       doctor: doctorRecord.name,
       appointmentDate,
@@ -485,5 +475,4 @@ async function startServer() {
     process.exitCode = 1;
   }
 }
-
 startServer();

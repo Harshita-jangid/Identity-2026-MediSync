@@ -32,9 +32,8 @@
         class="menu"
         id="menuBtn"
         aria-label="Toggle navigation"
-        aria-expanded="false"
-      >
-        ☰
+        aria-expanded="false">
+         ☰
       </button>
 
       <nav id="nav">
@@ -58,19 +57,16 @@
         </div>
         <div class="hero-copy">
           <div class="eyebrow"></div>
-
           <h1>
             Better care.<br />
             Better health.<br />
             <em>Better you.</em>
           </h1>
-
           <p class="hero-description">
             Your health journey deserves personal attention. Connect with
             trusted healthcare professionals and manage your appointments in one
             simple place.
           </p>
-
           <div class="hero-actions">
             <a href="#book" class="button primary"> Book an appointment </a>
             <a href="#services" class="text-link">Explore services</a>
@@ -182,7 +178,6 @@
           </div>
 
           <div class="form-grid">
-            <!-- PATIENT NAME -->
             <label>
               Full name *
               <input
@@ -195,20 +190,6 @@
               />
             </label>
 
-            <!-- EMAIL -->
-            <label>
-              Email address *
-              <input
-                type="email"
-                name="email"
-                placeholder="you@example.com"
-                maxlength="150"
-                autocomplete="email"
-                required
-              />
-            </label>
-
-            <!-- PHONE -->
             <label>
               Phone number *
               <input
@@ -222,32 +203,6 @@
               />
             </label>
 
-            <!-- AGE: ADDED -->
-            <label>
-              Age *
-              <input
-                type="number"
-                name="age"
-                min="0"
-                max="160"
-                step="1"
-                placeholder="Enter age"
-                required
-              />
-            </label>
-
-            <!-- GENDER: ADDED -->
-            <label>
-              Gender *
-              <select name="gender" required>
-                <option value="">Select gender</option>
-                <option value="Female">Female</option>
-                <option value="Male">Male</option>
-                <option value="Other">Other</option>
-              </select>
-            </label>
-
-            <!-- DOCTOR -->
             <label>
               Doctor *
               <select name="doctor" id="doctorSelect" required>
@@ -255,25 +210,18 @@
               </select>
             </label>
 
-            <!-- DEPARTMENT -->
             <label>
               Department *
               <select name="department" required>
-                <option value="">Select department</option>
-                <option value="General Checkup">General Checkup</option>
-                <option value="Family Medicine">Family Medicine</option>
-                <option value="Heart Health">Heart Health</option>
-                <option value="Wellness Care">Wellness Care</option>
+                <option value="">Loading departments...</option>
               </select>
             </label>
 
-            <!-- APPOINTMENT DATE -->
             <label>
               Appointment date *
               <input type="date" name="date" id="appointmentDate" required />
             </label>
 
-            <!-- APPOINTMENT TIME -->
             <label>
               Appointment time *
               <select name="time" required>
@@ -288,7 +236,6 @@
               </select>
             </label>
 
-            <!-- REASON -->
             <label class="full-width">
               Reason for visit
               <textarea
@@ -299,35 +246,28 @@
               ></textarea>
             </label>
           </div>
-
           <button type="submit" class="submit-btn">Request appointment</button>
-
           <p
             class="form-message"
             id="formMessage"
             role="status"
             aria-live="polite"
           ></p>
-
           <p class="privacy-note">
             Your appointment request will be sent to the clinic for review.
             Please provide accurate patient details.
           </p>
         </form>
       </section>
-
       <!-- CONTACT SECTION -->
       <section class="contact section" id="contact">
         <div class="contact-info">
           <div class="eyebrow">WE'RE HERE TO HELP</div>
-
           <h2>Have a question?<br /><em>Let's talk.</em></h2>
-
           <p class="contact-description">
             Have a question about appointments, our services, or clinic timings?
             Send us a message and our clinic team will get back to you.
           </p>
-
           <div class="contact-items">
             <div class="contact-item">
               <span><i class="fas fa-envelope"></i></span>
@@ -336,7 +276,6 @@
                 <strong>medisyncClinic@gmail.com</strong>
               </div>
             </div>
-
             <div class="contact-item">
               <span><i class="fas fa-location"></i></span>
               <div>
@@ -344,7 +283,6 @@
                 <strong>Ajmer, Rajasthan</strong>
               </div>
             </div>
-
             <div class="contact-item">
               <span><i class="fas fa-clock"></i></span>
               <div>
@@ -354,7 +292,6 @@
             </div>
           </div>
         </div>
-
         <!-- CONTACT QUERY FORM -->
         <form class="query-form" id="queryForm" action="/contact" method="post">
           <div class="form-head">
@@ -363,7 +300,6 @@
               <h3>Send us a query</h3>
             </div>
           </div>
-
           <div class="query-grid">
             <label>
               Full name
@@ -375,7 +311,6 @@
                 required
               />
             </label>
-
             <label>
               Email address
               <input
@@ -398,19 +333,12 @@
                 required
               />
             </label>
-
             <label>
-              Query category
-              <select name="category" required>
-                <option value="">Select a category</option>
-                <option value="Appointment">Appointment enquiry</option>
-                <option value="Services">Clinic services</option>
-                <option value="Timing">Clinic timings</option>
-                <option value="General">General enquiry</option>
-                <option value="Other">Other</option>
+              Department
+              <select name="department" id="queryDepartment" required>
+                <option value="">Select department</option>
               </select>
             </label>
-
             <label class="query-full">
               Your message
               <textarea
@@ -422,9 +350,7 @@
               ></textarea>
             </label>
           </div>
-
           <button type="submit" class="submit-btn">Send query</button>
-
           <p
             class="form-message"
             id="queryMessage"
@@ -440,9 +366,7 @@
       <a class="brand" href="#home">
         <span>Medi<span>Sync</span></span>
       </a>
-
       <p>Thoughtful care, made simpler.</p>
-
       <span>© <span id="year"></span> MediSync</span>
     </footer>
   </body>
